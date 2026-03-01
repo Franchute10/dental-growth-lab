@@ -79,7 +79,7 @@
             <div class="hidden md:flex items-center space-x-8">
                 <a class="text-xs font-black uppercase tracking-widest hover:text-primary transition-colors" href="#metodologia">Metodología</a>
                 <a class="text-xs font-black uppercase tracking-widest hover:text-primary transition-colors" href="#dashboard">Dashboard</a>
-                <button class="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-primary/20">Acceso Admin</button>
+                <button title="Acceso a CRM y Analítica (Looker Studio)" class="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-primary/20">Acceso Admin</button>
             </div>
         </div>
     </div>
@@ -104,15 +104,15 @@
                 </p>
 
                 <div class="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">
-                    <!-- Configura tu número aquí -->
-                    <a href="https://wa.me/51970641720?text=Hola,%20inicio%20prueba%20de%20conversión%20MIG-EP%20(Chacarilla)" class="bg-slate-900 text-white text-center py-5 px-12 rounded-2xl font-black shadow-2xl hover:scale-[1.02] transition-all uppercase tracking-widest text-sm flex items-center justify-center gap-3">
+                    <!-- WhatsApp Test Number: 51924200094 -->
+                    <a href="https://wa.me/51924200094?text=Hola,%20inicio%20prueba%20de%20conversión%20MIG-EP%20(Chacarilla)" class="bg-slate-900 text-white text-center py-5 px-12 rounded-2xl font-black shadow-2xl hover:scale-[1.02] transition-all uppercase tracking-widest text-sm flex items-center justify-center gap-3">
                         <span class="material-icons-outlined">play_circle</span> Iniciar Test de Flujo
                     </a>
                 </div>
             </div>
 
             <div class="relative" id="dashboard">
-                <!-- DASHBOARD DE MÉTRICAS EN VIVO -->
+                <!-- DASHBOARD DE MÉTRICAS EN VIVO (MOCKUP DEL REPOSITORIO) -->
                 <div class="bg-white dark:bg-slate-800 p-6 lg:p-8 rounded-[2.5rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] border border-slate-100 relative z-10 animate-subtle">
                     <div class="flex justify-between items-center mb-6 lg:mb-8 border-b pb-4 border-slate-50">
                         <h3 class="font-black uppercase tracking-widest text-[10px] lg:text-xs text-slate-400">Panel de Control de Validación</h3>
@@ -121,29 +121,29 @@
                     
                     <div class="grid grid-cols-2 gap-4 lg:gap-6">
                         <div class="space-y-1">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Leads Recibidos</span>
-                            <div class="text-2xl lg:text-3xl font-black text-slate-900">1,248</div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Leads en Repositorio</span>
+                            <div class="text-2xl lg:text-3xl font-black text-slate-900">100</div>
                         </div>
                         <div class="space-y-1">
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Tiempo Resp. Avg</span>
                             <div class="text-2xl lg:text-3xl font-black text-primary">0.4 <span class="text-sm">min</span></div>
                         </div>
                         <div class="space-y-1">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Conversión Test</span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Conversión (Piloto)</span>
                             <div class="text-2xl lg:text-3xl font-black text-secondary">22.4%</div>
                         </div>
                         <div class="space-y-1">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">No-Show Proyectado</span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Tasa de No-Show</span>
                             <div class="text-2xl lg:text-3xl font-black text-rose-500">12%</div>
                         </div>
                     </div>
 
-                    <div class="mt-8 pt-6 border-t border-slate-50">
+                    <div class="mt-8 pt-6 border-t border-slate-50 text-center">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-4">Métricas Sincronizadas con Google Sheets</p>
                         <div class="flex items-center gap-4">
                             <div class="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
-                                <div class="w-3/4 h-full bg-primary animate-pulse"></div>
+                                <div class="w-full h-full bg-primary animate-pulse"></div>
                             </div>
-                            <span class="text-[10px] font-bold text-slate-400 uppercase">Simulación Validada</span>
                         </div>
                     </div>
                 </div>
@@ -157,7 +157,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16 lg:mb-20 space-y-4">
             <h2 class="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight font-display uppercase italic">Arquitectura del Experimento</h2>
-            <p class="text-slate-500 max-w-2xl mx-auto text-base lg:text-lg">Validación técnica de las capas de captación y automatización comercial del Modelo MIG-EP.</p>
+            <p class="text-slate-500 max-w-2xl mx-auto text-base lg:text-lg">Flujo de datos: Landing -> WhatsApp Business -> Google Sheets -> Looker Studio.</p>
         </div>
         
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
@@ -165,32 +165,32 @@
                 <div class="w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-all">
                     <span class="material-icons-outlined">ads_click</span>
                 </div>
-                <h3 class="text-xs font-black uppercase tracking-widest mb-3">Capa 1: Tráfico</h3>
-                <p class="text-xs text-slate-500 leading-relaxed">Parámetros UTM y tracking de eventos para identificar fuentes de conversión exactas en el canal digital.</p>
+                <h3 class="text-xs font-black uppercase tracking-widest mb-3">Captación</h3>
+                <p class="text-xs text-slate-500 leading-relaxed">Punto de entrada del lead simulado a través de esta landing page de validación.</p>
             </div>
 
             <div class="p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:border-primary transition-all group shadow-sm">
                 <div class="w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-all">
                     <span class="material-icons-outlined">bolt</span>
                 </div>
-                <h3 class="text-xs font-black uppercase tracking-widest mb-3">Capa 2: Respuesta</h3>
-                <p class="text-xs text-slate-500 leading-relaxed">Flujo automatizado de WhatsApp para clasificación inmediata y atención 24/7 sin latencia de respuesta.</p>
+                <h3 class="text-xs font-black uppercase tracking-widest mb-3">Automatización</h3>
+                <p class="text-xs text-slate-500 leading-relaxed">Uso de WhatsApp Business (Número: 51924200094) para la gestión inmediata del paciente.</p>
             </div>
 
             <div class="p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:border-primary transition-all group shadow-sm">
                 <div class="w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-all">
                     <span class="material-icons-outlined">storage</span>
                 </div>
-                <h3 class="text-xs font-black uppercase tracking-widest mb-3">Capa 3: CRM Lean</h3>
-                <p class="text-xs text-slate-500 leading-relaxed">Repositorio centralizado en Google Sheets para el control de estados comerciales y trazabilidad del paciente.</p>
+                <h3 class="text-xs font-black uppercase tracking-widest mb-3">Repositorio CRM</h3>
+                <p class="text-xs text-slate-500 leading-relaxed">Registro de los 100 pacientes en Google Sheets (Carpeta: Capstone_MIG-EP).</p>
             </div>
 
             <div class="p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:border-primary transition-all group shadow-sm">
                 <div class="w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-all">
                     <span class="material-icons-outlined">query_stats</span>
                 </div>
-                <h3 class="text-xs font-black uppercase tracking-widest mb-3">Capa 4: Analítica</h3>
-                <p class="text-xs text-slate-500 leading-relaxed">Visualización de KPIs en tiempo real mediante Looker Studio para la toma de decisiones gerenciales.</p>
+                <h3 class="text-xs font-black uppercase tracking-widest mb-3">Métricas (L.S.)</h3>
+                <p class="text-xs text-slate-500 leading-relaxed">Análisis avanzado en Looker Studio para visualizar la conversión y el ROI del piloto.</p>
             </div>
         </div>
     </div>
@@ -205,7 +205,7 @@
                     <span class="text-2xl font-black tracking-tighter uppercase italic font-display">Growth<span class="text-primary">Lab</span></span>
                 </div>
                 <p class="text-slate-400 text-sm leading-relaxed max-w-sm mx-auto lg:mx-0">
-                    Este entorno digital constituye una herramienta de validación académica exclusiva para el Capstone Project. No representa una clínica real.
+                    Evidencia técnica para el Capstone Project - Maestría en Marketing CUC.
                 </p>
             </div>
             <div class="bg-white/5 p-6 lg:p-8 rounded-2xl border border-white/10">
@@ -231,6 +231,7 @@
             </div>
         </div>
     </div>
+</div>
 </footer>
 
 </body>
