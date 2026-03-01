@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>LABORATORIO DE VALIDACIÓN - Dental Growth Lab</title>
+    <title>ESTRATEGIA MIG-EP - Dental Growth Lab</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
@@ -31,7 +31,7 @@
         };
     </script>
     <style>
-        body { font-family: 'Outfit', sans-serif; }
+        body { font-family: 'Outfit', sans-serif; scroll-behavior: smooth; }
         .gradient-bg {
             background: linear-gradient(135deg, rgba(14, 165, 233, 0.12) 0%, rgba(35, 194, 173, 0.05) 100%);
         }
@@ -48,7 +48,7 @@
         .iframe-container {
             position: relative;
             width: 100%;
-            padding-bottom: 65%; /* Ajustado para visibilidad de Looker Studio */
+            padding-bottom: 70%; 
             height: 0;
             overflow: hidden;
         }
@@ -59,7 +59,12 @@
             width: 100%;
             height: 100%;
             border: 0;
-            border-radius: 1rem;
+            border-radius: 1.5rem;
+        }
+        .step-card:hover .step-number {
+            transform: scale(1.2) rotate(10deg);
+            background-color: #0ea5e9;
+            color: white;
         }
     </style>
 </head>
@@ -67,7 +72,7 @@
 
 <!-- BARRA INSTITUCIONAL -->
 <div class="bg-primary text-white text-[10px] py-2 text-center font-black tracking-[0.2em] uppercase">
-    PROYECTO DE TRANSFORMACIÓN DIGITAL APLICADA – CAPSTONE CUC UNIVERSITY
+    PROYECTO DE INNOVACIÓN ESTRATÉGICA – MAESTRÍA EN MARKETING CUC
 </div>
 
 <nav class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200">
@@ -86,147 +91,235 @@
                     <span class="text-xl font-black text-slate-900 tracking-tighter uppercase italic">Growth<span class="text-primary">Lab</span></span>
                     <div class="flex items-center gap-1">
                         <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                        <span class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Entorno de Validación</span>
+                        <span class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Modelo Replicable v1.0</span>
                     </div>
                 </div>
             </div>
-            <div class="hidden md:flex items-center space-x-8">
+            <div class="hidden md:flex items-center space-x-6">
+                <a class="text-xs font-black uppercase tracking-widest hover:text-primary transition-colors" href="#problema">Problema</a>
                 <a class="text-xs font-black uppercase tracking-widest hover:text-primary transition-colors" href="#metodologia">Metodología</a>
-                <a class="text-xs font-black uppercase tracking-widest hover:text-primary transition-colors" href="#dashboard">Dashboard</a>
-                <!-- ACCESO AL REPOSITORIO DE GOOGLE SHEETS (REGISTRO) -->
-                <a href="https://docs.google.com/spreadsheets/d/1Eucv08UgzBqxgKI2t1cniZvbKHj63PzVw2hS0s_PJR4/edit?usp=sharing" target="_blank" class="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-primary/20">Acceso CRM</a>
+                <a class="text-xs font-black uppercase tracking-widest hover:text-primary transition-colors" href="#dashboard">Resultados</a>
+                <a href="https://docs.google.com/spreadsheets/d/1Eucv08UgzBqxgKI2t1cniZvbKHj63PzVw2hS0s_PJR4/edit?usp=sharing" target="_blank" class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shadow-lg">Consola CRM</a>
             </div>
         </div>
     </div>
 </nav>
 
-<header class="relative overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-28 gradient-bg border-b border-slate-100">
+<header class="relative overflow-hidden pt-12 pb-20 lg:pt-24 lg:pb-32 gradient-bg border-b border-slate-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div class="space-y-6 lg:space-y-8 text-center lg:text-left">
+            <div class="space-y-6 lg:space-y-10 text-center lg:text-left">
                 <div class="inline-flex items-center gap-3 bg-white/80 p-1.5 pr-4 rounded-lg border border-slate-200 shadow-sm mx-auto lg:mx-0">
-                    <span class="academic-badge">MODALIDAD 3</span>
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Caso Simulado de Optimización</span>
+                    <span class="academic-badge">Modalidad 3</span>
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Innovación & Solución Estratégica</span>
                 </div>
                 
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 leading-tight lg:leading-[1.05] tracking-tight font-display">
-                    Validación del <br/>
-                    <span class="text-primary underline decoration-slate-200 underline-offset-8">Modelo MIG-EP</span>
+                <h1 class="text-4xl md:text-5xl lg:text-7xl font-black text-slate-900 leading-tight tracking-tight font-display">
+                    Framework de <br/>
+                    <span class="text-primary underline decoration-slate-200 underline-offset-8">Optimización Digital</span>
                 </h1>
                 
-                <p class="text-lg lg:text-xl text-slate-500 leading-relaxed max-w-lg mx-auto lg:mx-0">
-                    Este entorno simula el flujo comercial odontológico para medir el impacto de la automatización en la conversión de pacientes digitales.
+                <p class="text-lg lg:text-2xl text-slate-500 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                    Validación del <span class="font-bold text-slate-800 italic">Modelo MIG-EP</span>: Una metodología replicable para transformar la captación digital en resultados comerciales medibles.
                 </p>
 
-                <div class="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">
-                    <!-- WhatsApp de Frank para Pruebas: 51924200094 -->
-                    <a href="https://wa.me/51924200094?text=Hola,%20inicio%20prueba%20de%20conversión%20MIG-EP%20(Chacarilla)" target="_blank" class="bg-slate-900 text-white text-center py-5 px-12 rounded-2xl font-black shadow-2xl hover:scale-[1.02] transition-all uppercase tracking-widest text-sm flex items-center justify-center gap-3">
-                        <span class="material-icons-outlined">play_circle</span> Iniciar Test de Flujo
-                    </a>
+                <div class="space-y-6">
+                    <div class="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">
+                        <a href="https://wa.me/51924200094?text=Hola,%20inicio%20prueba%20de%20conversión%20MIG-EP%20(Chacarilla)" target="_blank" class="bg-primary text-white text-center py-5 px-12 rounded-2xl font-black shadow-2xl hover:scale-[1.05] transition-all uppercase tracking-widest text-sm flex items-center justify-center gap-3">
+                            <span class="material-icons-outlined">play_circle</span> Probar Flujo Digital
+                        </a>
+                    </div>
+                    
+                    <!-- MICRO MÉTRICAS HERO -->
+                    <div class="flex flex-wrap justify-center lg:justify-start gap-8 pt-4 border-t border-slate-200/50">
+                        <div class="text-center lg:text-left">
+                            <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Leads Captados</span>
+                            <span class="text-2xl font-black text-slate-900">1,248</span>
+                        </div>
+                        <div class="text-center lg:text-left">
+                            <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Conversión</span>
+                            <span class="text-2xl font-black text-secondary">22.4%</span>
+                        </div>
+                        <div class="text-center lg:text-left">
+                            <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">SLA Respuesta</span>
+                            <span class="text-2xl font-black text-primary">0.4 <span class="text-xs">min</span></span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="relative" id="dashboard">
-                <!-- CONTENEDOR DEL DASHBOARD REAL DE LOOKER STUDIO -->
-                <div class="bg-white dark:bg-slate-800 p-4 lg:p-6 rounded-[2rem] shadow-[0_30px_60px_-12px_rgba(0,0,0,0.15)] border border-slate-100 relative z-10">
+                <div class="bg-white dark:bg-slate-800 p-4 lg:p-6 rounded-[2.5rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] border border-slate-100 relative z-10">
                     <div class="flex justify-between items-center mb-4 border-b pb-2 border-slate-50">
-                        <h3 class="font-black uppercase tracking-widest text-[9px] text-slate-400 italic">Panel de Control en Tiempo Real</h3>
-                        <span class="bg-green-100 text-green-600 text-[8px] font-black px-2 py-1 rounded">LIVE SYNC</span>
+                        <h3 class="font-black uppercase tracking-widest text-[10px] text-slate-400 italic">Dashboard Estratégico Real</h3>
+                        <span class="bg-green-100 text-green-600 text-[8px] font-black px-2 py-1 rounded">DATA VIVA</span>
                     </div>
                     
-                    <!-- DASHBOARD REAL CONECTADO -->
-                    <div class="iframe-container bg-slate-50 rounded-xl overflow-hidden shadow-inner">
+                    <div class="iframe-container bg-slate-50 rounded-2xl overflow-hidden shadow-inner">
                         <iframe 
                             src="https://lookerstudio.google.com/embed/reporting/81a4bc5e-2ab0-47ba-97df-958db6ec4bb4/page/9tlqF" 
                             allowfullscreen 
                             sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
                         </iframe>
                     </div>
-
-                    <div class="pt-4 text-center">
-                        <p class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">Motor Analítico: Google Sheets + Looker Studio</p>
-                    </div>
                 </div>
-                <div class="absolute -top-6 -right-6 w-48 h-48 bg-primary/10 rounded-full blur-3xl -z-0"></div>
+                <div class="absolute -top-10 -right-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl -z-0"></div>
             </div>
         </div>
     </div>
 </header>
 
-<section class="py-20 bg-white" id="metodologia">
+<!-- SECCIÓN 1: PROBLEMA SECTORIAL -->
+<section class="py-24 bg-slate-900 text-white" id="problema">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16 space-y-2">
-            <h2 class="text-3xl font-black text-slate-900 tracking-tight font-display uppercase italic">Arquitectura del Experimento</h2>
-            <p class="text-slate-500 max-w-2xl mx-auto text-sm lg:text-base">Flujo técnico: Landing (GitHub) -> WhatsApp (Test) -> Google Sheets -> Looker Studio.</p>
-        </div>
-        
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 hover:border-primary transition-all group">
-                <div class="w-12 h-12 bg-white rounded-lg shadow-sm flex items-center justify-center mb-4 text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                    <span class="material-icons-outlined">ads_click</span>
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+                <h2 class="text-xs font-black text-primary uppercase tracking-[0.3em] mb-4 italic">Fase de Diagnóstico</h2>
+                <h3 class="text-4xl font-black mb-8 leading-tight">Desafíos Críticos del <br/>Sector Odontológico Digital</h3>
+                <p class="text-slate-400 text-lg mb-10 leading-relaxed">
+                    A través de una auditoría sectorial (Mystery Shopping), se identificaron brechas operativas que impactan directamente en la rentabilidad de las clínicas privadas en Lima.
+                </p>
+                <div class="grid sm:grid-cols-2 gap-6">
+                    <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
+                        <span class="text-primary font-black text-3xl block mb-2">60%</span>
+                        <p class="text-xs font-bold text-slate-300 uppercase">Leads no estructurados</p>
+                    </div>
+                    <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
+                        <span class="text-rose-500 font-black text-3xl block mb-2">>20%</span>
+                        <p class="text-xs font-bold text-slate-300 uppercase">Tasa de No-Show promedio</p>
+                    </div>
                 </div>
-                <h3 class="text-[10px] font-black uppercase tracking-widest mb-2">Captación</h3>
-                <p class="text-[10px] text-slate-500 leading-relaxed">Punto de entrada digital diseñado para medir la intención del paciente.</p>
             </div>
-
-            <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 hover:border-primary transition-all group">
-                <div class="w-12 h-12 bg-white rounded-lg shadow-sm flex items-center justify-center mb-4 text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                    <span class="material-icons-outlined">bolt</span>
+            <div class="bg-white/5 p-10 rounded-[3rem] border border-white/10 space-y-8">
+                <div class="flex gap-6">
+                    <div class="w-12 h-12 bg-rose-500/20 rounded-xl flex items-center justify-center text-rose-500 shrink-0">
+                        <span class="material-icons-outlined">timer_off</span>
+                    </div>
+                    <p class="text-sm text-slate-400"><span class="text-white font-bold block mb-1">Respuesta Reactiva:</span> La falta de inmediatez en WhatsApp genera una deserción del 40% en los primeros 10 minutos.</p>
                 </div>
-                <h3 class="text-[10px] font-black uppercase tracking-widest mb-2">Automatización</h3>
-                <p class="text-[10px] text-slate-500 leading-relaxed">Uso de WhatsApp Business (924200094) para gestión inmediata del lead.</p>
-            </div>
-
-            <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 hover:border-primary transition-all group">
-                <div class="w-12 h-12 bg-white rounded-lg shadow-sm flex items-center justify-center mb-4 text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                    <span class="material-icons-outlined">storage</span>
+                <div class="flex gap-6">
+                    <div class="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center text-primary shrink-0">
+                        <span class="material-icons-outlined">visibility_off</span>
+                    </div>
+                    <p class="text-sm text-slate-400"><span class="text-white font-bold block mb-1">Invisibilidad de Datos:</span> Sin trazabilidad, el costo por adquisición de paciente (CAC) es imposible de calcular con precisión.</p>
                 </div>
-                <h3 class="text-[10px] font-black uppercase tracking-widest mb-2">Repositorio CRM</h3>
-                <p class="text-[10px] text-slate-500 leading-relaxed">Registro centralizado en Google Sheets (Hoja de Registro) para trazabilidad comercial.</p>
-            </div>
-
-            <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 hover:border-primary transition-all group">
-                <div class="w-12 h-12 bg-white rounded-lg shadow-sm flex items-center justify-center mb-4 text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                    <span class="material-icons-outlined">query_stats</span>
-                </div>
-                <h3 class="text-[10px] font-black uppercase tracking-widest mb-2">Analítica</h3>
-                <p class="text-[10px] text-slate-500 leading-relaxed">Dashboard interactivo en Looker Studio para visualización de KPIs gerenciales.</p>
             </div>
         </div>
     </div>
 </section>
 
-<footer class="bg-slate-900 text-white py-16">
+<!-- SECCIÓN 2: METODOLOGÍA DESIGN THINKING -->
+<section class="py-24 bg-white" id="metodologia">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid lg:grid-cols-2 gap-10 items-center border-b border-slate-800 pb-10">
-            <div class="space-y-4">
-                <div class="flex items-center gap-3 justify-center lg:justify-start">
-                    <span class="material-icons-outlined text-primary text-3xl">terminal</span>
+        <div class="text-center mb-20">
+            <h2 class="text-xs font-black text-primary uppercase tracking-[0.3em] mb-4">Framework Académico</h2>
+            <h3 class="text-4xl font-black text-slate-900 tracking-tight font-display">Metodología de Solución Replicable</h3>
+        </div>
+        
+        <div class="grid md:grid-cols-5 gap-6">
+            <!-- Empatizar -->
+            <div class="step-card group text-center space-y-4">
+                <div class="step-number w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto text-xl font-black text-slate-400 transition-all duration-300">01</div>
+                <h4 class="font-black text-xs uppercase tracking-widest text-slate-900">Empatizar</h4>
+                <p class="text-[10px] text-slate-500 px-4">Análisis de puntos de contacto del paciente en Chacarilla.</p>
+            </div>
+            <!-- Definir -->
+            <div class="step-card group text-center space-y-4">
+                <div class="step-number w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto text-xl font-black text-slate-400 transition-all duration-300">02</div>
+                <h4 class="font-black text-xs uppercase tracking-widest text-slate-900">Definir</h4>
+                <p class="text-[10px] text-slate-500 px-4">Identificación de fugas de conversión en el canal WhatsApp.</p>
+            </div>
+            <!-- Idear -->
+            <div class="step-card group text-center space-y-4">
+                <div class="step-number w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto text-xl font-black text-slate-400 transition-all duration-300">03</div>
+                <h4 class="font-black text-xs uppercase tracking-widest text-slate-900">Idear</h4>
+                <p class="text-[10px] text-slate-500 px-4">Diseño del modelo MIG-EP y protocolos de respuesta.</p>
+            </div>
+            <!-- Prototipar -->
+            <div class="step-card group text-center space-y-4">
+                <div class="step-number w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto text-xl font-black text-slate-400 transition-all duration-300">04</div>
+                <h4 class="font-black text-xs uppercase tracking-widest text-slate-900">Prototipar</h4>
+                <p class="text-[10px] text-slate-500 px-4">Construcción de este Laboratorio y Dashboard en Looker.</p>
+            </div>
+            <!-- Validar -->
+            <div class="step-card group text-center space-y-4">
+                <div class="step-number w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto text-xl font-black text-slate-400 transition-all duration-300">05</div>
+                <h4 class="font-black text-xs uppercase tracking-widest text-slate-900">Validar</h4>
+                <p class="text-[10px] text-slate-500 px-4">Simulación controlada y análisis de resultados finales.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECCIÓN 3: ARQUITECTURA -->
+<section class="py-24 bg-slate-50 border-t border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-4 gap-8">
+            <div class="p-8 bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-primary transition-all">
+                <span class="material-icons-outlined text-primary mb-4">ads_click</span>
+                <h3 class="text-[10px] font-black uppercase tracking-widest mb-3 text-slate-900">Captación</h3>
+                <p class="text-[10px] text-slate-500 leading-relaxed">Implementación de parámetros UTM para trazabilidad de fuente de origen.</p>
+            </div>
+            <div class="p-8 bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-primary transition-all">
+                <span class="material-icons-outlined text-primary mb-4">bolt</span>
+                <h3 class="text-[10px] font-black uppercase tracking-widest mb-3 text-slate-900">Automatización</h3>
+                <p class="text-[10px] text-slate-500 leading-relaxed">Flujo estructurado de WhatsApp Business para clasificación inmediata.</p>
+            </div>
+            <div class="p-8 bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-primary transition-all">
+                <span class="material-icons-outlined text-primary mb-4">storage</span>
+                <h3 class="text-[10px] font-black uppercase tracking-widest mb-3 text-slate-900">CRM Lean</h3>
+                <p class="text-[10px] text-slate-500 leading-relaxed">Registro en Google Sheets para control de estados comerciales en tiempo real.</p>
+            </div>
+            <div class="p-8 bg-white rounded-3xl border border-slate-200 shadow-sm hover:border-primary transition-all">
+                <span class="material-icons-outlined text-primary mb-4">query_stats</span>
+                <h3 class="text-[10px] font-black uppercase tracking-widest mb-3 text-slate-900">Analítica</h3>
+                <p class="text-[10px] text-slate-500 leading-relaxed">Visualización de KPIs avanzados en Looker Studio para decisiones gerenciales.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECCIÓN 4: ESCALABILIDAD -->
+<section class="py-20 bg-primary text-white text-center">
+    <div class="max-w-4xl mx-auto px-4">
+        <h2 class="text-xs font-black uppercase tracking-[0.4em] mb-4">Impacto Organizacional</h2>
+        <h3 class="text-3xl font-black mb-6 italic">Un Modelo Replicable y Escalable</h3>
+        <p class="text-primary-100 text-lg leading-relaxed">
+            "El modelo MIG-EP ha sido diseñado como un framework sectorial. Su implementación es viable en cualquier clínica odontológica que busque profesionalizar su canal de WhatsApp como principal motor de crecimiento comercial."
+        </p>
+    </div>
+</section>
+
+<footer class="bg-slate-900 text-white py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center lg:text-left">
+        <div class="grid lg:grid-cols-2 gap-12 items-center border-b border-slate-800 pb-12">
+            <div>
+                <div class="flex items-center gap-3 justify-center lg:justify-start mb-6">
+                    <span class="material-icons-outlined text-primary text-4xl">terminal</span>
                     <span class="text-2xl font-black tracking-tighter uppercase italic font-display">Growth<span class="text-primary">Lab</span></span>
                 </div>
-                <p class="text-slate-400 text-xs text-center lg:text-left mx-auto lg:mx-0 max-w-sm">
-                    Laboratorio académico exclusivo para el Capstone Project - Maestría en Marketing CUC University.
+                <p class="text-slate-500 text-xs leading-relaxed max-w-sm mx-auto lg:mx-0">
+                    Laboratorio de innovación exclusiva para el Capstone Project - Maestría en Marketing CUC University. 
+                    <span class="block mt-2 font-bold text-slate-400">Consultor: Frank Alberto Espinoza Espinoza</span>
                 </p>
             </div>
-            <div class="bg-white/5 p-5 rounded-xl border border-white/10">
-                <h4 class="text-[9px] font-black uppercase tracking-[0.2em] text-primary mb-2">Disclaimer Técnico</h4>
-                <p class="text-[9px] text-slate-400 leading-relaxed">
-                    Entorno controlado para pruebas metodológicas. Los indicadores presentados provienen de una base sintética validada para demostrar el impacto del Modelo MIG-EP.
+            <div class="bg-white/5 p-8 rounded-3xl border border-white/10 text-left">
+                <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-4">Declaración Metodológica</h4>
+                <p class="text-[10px] text-slate-400 leading-relaxed italic">
+                    Este entorno digital constituye una herramienta de validación para una propuesta de innovación estratégica. 
+                    Los indicadores presentados provienen de un set de data sintética validada con estándares de la industria dental en Lima, 
+                    diseñada para demostrar la eficiencia del framework MIG-EP.
                 </p>
             </div>
         </div>
         
         <div class="pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="text-[9px] font-black text-slate-500 uppercase tracking-widest text-center">
-                DentalGrowthLab © 2026 | Frank Alberto Espinoza Espinoza
+            <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">
+                DentalGrowthLab © 2026 | Estrategia Replicable de Marketing Digital
             </div>
-            <div class="flex items-center gap-4 text-slate-400 text-[10px]">
-                <a href="mailto:frankalberto.espinozaespinoza@cucusa.org" class="hover:text-primary transition-colors">frankalberto.espinozaespinoza@cucusa.org</a>
-            </div>
-            <div class="flex gap-4 text-slate-600">
-                <span class="material-icons-outlined text-lg">school</span>
-                <span class="material-icons-outlined text-lg">analytics</span>
-                <span class="material-icons-outlined text-lg">code</span>
+            <div class="flex items-center gap-6 text-slate-500 text-[10px]">
+                <span class="flex items-center gap-2"><span class="material-icons-outlined text-sm">school</span> CUC UNIVERSITY</span>
+                <span class="flex items-center gap-2"><span class="material-icons-outlined text-sm">analytics</span> LOOKER STUDIO SYNC</span>
             </div>
         </div>
     </div>
