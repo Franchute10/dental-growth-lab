@@ -51,7 +51,7 @@
                 servicio: document.getElementById('servicio').value,
                 telefono: document.getElementById('telefono').value,
                 fuente: "Validación Web Lab",
-                timestamp_entrada: new Date().toLocaleString('es-PE', { timeZone: 'America/Lima' })
+                timestamp_entrada: new Date().toISOString()
             };
 
             try {
@@ -344,3 +344,4 @@
 
 </body>
 </html>
+
