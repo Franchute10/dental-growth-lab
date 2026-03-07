@@ -34,30 +34,31 @@
 
         /**
          * Función para enviar datos al Bridge de Google Apps Script
-         * Se encarga de capturar el nombre, celular, servicio y timestamp ISO.
+         * Envía: nombre, celular, servicio, fuente y timestamp_entrada
          */
         async function enviarLead(event) {
             event.preventDefault();
             const btn = document.getElementById('btnSubmit');
             const status = document.getElementById('formStatus');
             
-            // Estado visual de procesamiento
+            // UI State: Bloqueo y carga
             btn.disabled = true;
             btn.innerHTML = `<span class="material-icons-outlined animate-spin text-sm">sync</span> Procesando...`;
-            status.innerHTML = "";
+            status.innerHTML = "Conectando con el repositorio...";
 
             const formData = {
                 nombre: document.getElementById('nombre').value,
-                celular: document.getElementById('telefono').value, // Mapeado para la Columna L
+                celular: document.getElementById('telefono').value,
                 servicio: document.getElementById('servicio').value,
                 fuente: "Validación Web Lab",
                 timestamp_entrada: new Date().toISOString()
             };
 
             try {
-                // URL de Google Apps Script actualizada
+                // URL DE TU GOOGLE APPS SCRIPT
                 const webhookURL = "https://script.google.com/macros/s/AKfycbzqw-MYGyW414G05q2y-ySo5J_aOflaCxwH4PuhEACiE8VVJ9dD6dWHhrns1xLQkHNE/exec"; 
                 
+                // Usamos 'text/plain' para evitar problemas de CORS preflight con GAS
                 await fetch(webhookURL, {
                     method: 'POST',
                     mode: 'no-cors', 
@@ -65,9 +66,9 @@
                     body: JSON.stringify(formData)
                 });
 
-                // Éxito visual
+                // En modo no-cors no podemos leer la respuesta, así que notificamos éxito y procedemos
                 status.className = "text-[11px] text-center font-bold text-green-500 italic h-4 mt-2";
-                status.innerHTML = "✅ Lead registrado en Repositorio. Redirigiendo...";
+                status.innerHTML = "✅ Registrado en Repositorio. Abriendo WhatsApp...";
                 
                 setTimeout(() => {
                     const mensajeWa = `Hola, soy ${formData.nombre}. Estoy validando el flujo MIG-EP para el servicio de ${formData.servicio}.`;
@@ -81,10 +82,10 @@
 
             } catch (error) {
                 status.className = "text-[11px] text-center font-bold text-rose-500 italic h-4 mt-2";
-                status.innerHTML = "❌ Error en el Bridge de Automatización.";
-                console.error("Detalle del error:", error);
+                status.innerHTML = "❌ Error de conexión con el Bridge.";
+                console.error("Error:", error);
                 btn.disabled = false;
-                btn.innerText = "Reintentar Envío";
+                btn.innerText = "Reintentar Validación";
             }
         }
     </script>
@@ -166,14 +167,14 @@
                         <span class="text-[10px] font-black uppercase tracking-widest">Validación Real-Time v2.5</span>
                     </div>
                     <h2 class="text-4xl font-black text-slate-900 tracking-tight leading-none italic">Test de Flujo <br/>Automatizado</h2>
-                    <p class="text-sm text-slate-500 leading-relaxed italic text-balance">Ingrese datos de prueba. El sistema registrará el celular y el timestamp ISO en su Google Sheet para el cálculo del SLA comercial.</p>
+                    <p class="text-sm text-slate-500 leading-relaxed italic text-balance">Complete los datos de prueba. El sistema registrará el celular y el timestamp ISO en su Google Sheet para el cálculo del SLA comercial.</p>
                 </div>
 
                 <form id="leadForm" onsubmit="enviarLead(event)" class="space-y-4">
                     <div class="space-y-4">
-                        <input type="text" id="nombre" placeholder="Nombre completo del lead" required class="form-input w-full px-5 py-4 rounded-2xl text-sm focus:outline-none focus:ring-0">
+                        <input type="text" id="nombre" placeholder="Nombre completo del lead" required class="form-input w-full px-5 py-4 rounded-2xl text-sm focus:outline-none focus:ring-0 text-slate-900">
                         <div class="grid grid-cols-2 gap-4">
-                            <input type="tel" id="telefono" placeholder="WhatsApp (9 dígitos)" required class="form-input w-full px-5 py-4 rounded-2xl text-sm focus:outline-none focus:ring-0">
+                            <input type="tel" id="telefono" placeholder="WhatsApp (9 dígitos)" required class="form-input w-full px-5 py-4 rounded-2xl text-sm focus:outline-none focus:ring-0 text-slate-900">
                             <select id="servicio" required class="form-input w-full px-5 py-4 rounded-2xl text-sm focus:outline-none focus:ring-0 italic text-slate-500">
                                 <option value="">Servicio a Validar</option>
                                 <option value="Profilaxis Pro">Profilaxis Pro</option>
@@ -239,7 +240,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-20 space-y-3">
             <h2 class="text-xs font-black text-primary uppercase tracking-[0.3em] mb-4 italic text-center">Ingeniería de Procesos</h2>
-            <h3 class="text-4xl font-black text-slate-900 tracking-tight font-display text-center">Arquitectura del Ecosistema Digital</h3>
+            <h3 class="text-4xl font-black text-slate-900 tracking-tight font-display text-center">Trazabilidad Automatizada del SLA</h3>
         </div>
         
         <div class="grid md:grid-cols-4 gap-8">
