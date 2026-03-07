@@ -60,11 +60,32 @@
                 const webhookURL = "https://script.google.com/macros/s/AKfycbzqw-MYGyW414G05q2y-ySo5J_aOflaCxwH4PuhEACiE8VVJ9dD6dWHhrns1xLQkHNE/exec"; 
                 
                 // Envío asíncrono modo no-cors para evitar bloqueos de seguridad de Google
-                await fetch(webhookURL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify(formData)
-                });
+               async function enviarLead(event) {
+
+               event.preventDefault();
+
+               const btn = document.getElementById('btnSubmit');
+               const status = document.getElementById('formStatus');
+
+               btn.disabled = true;
+
+               const webhookURL = "https://script.google.com/macros/s/AKfycbzqw-MYGyW414G05q2y-ySo5J_aOflaCxwH4PuhEACiE8VVJ9dD6dWHhrns1xLQkHNE/exec";
+
+               const formData = new FormData();
+
+               formData.append("nombre", document.getElementById("nombre").value);
+               formData.append("celular", document.getElementById("telefono").value);
+               formData.append("servicio", document.getElementById("servicio").value);
+               formData.append("fuente", "Validación Web Lab");
+
+               await fetch(webhookURL, {
+               method:"POST",
+               body:formData
+               });
+
+               status.innerHTML = "Lead registrado";
+
+               }
 
                 // Éxito en el envío
                 status.className = "text-[11px] text-center font-bold text-green-500 italic h-4 mt-2";
@@ -310,4 +331,5 @@
 
 </body>
 </html>
+
 
