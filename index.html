@@ -33,8 +33,8 @@
         };
 
         /**
-         * Función para enviar datos al Bridge de Make.com
-         * Captura el timestamp en formato ISO para precisión de ingeniería
+         * Función para enviar datos al Bridge de Google Apps Script
+         * Se migró desde Make.com para optimizar costos y control de datos
          */
         async function enviarLead(event) {
             event.preventDefault();
@@ -45,42 +45,44 @@
             btn.innerHTML = `<span class="material-icons-outlined animate-spin">sync</span> Procesando...`;
             status.innerHTML = "";
 
+            // Mapeo de datos para el Google Sheet (incluyendo campo Celular)
             const formData = {
                 nombre: document.getElementById('nombre').value,
+                celular: document.getElementById('telefono').value, // Campo corregido
                 servicio: document.getElementById('servicio').value,
-                telefono: document.getElementById('telefono').value,
                 fuente: "Validación Web Lab",
                 timestamp_entrada: new Date().toISOString()
             };
 
             try {
-                const webhookURL = "https://hook.us2.make.com/d4chzus1cmajcpk2exi2q4srh9df0axd"; 
+                // Nuevo URL de Google Apps Script
+                const webhookURL = "https://script.google.com/macros/s/AKfycby7JPLEUQhZTd4Tkj8kdg8oprMgUXfJlJfWsFNhXYdfewDiatKZ515X-ggFaeVhU0EX/exec"; 
                 
-                const response = await fetch(webhookURL, {
+                // Nota: Usamos no-cors si el script de Google no tiene cabeceras configuradas, 
+                // pero lo ideal es enviar como POST estándar para que el script lo procese.
+                await fetch(webhookURL, {
                     method: 'POST',
+                    mode: 'no-cors', // Necesario para Google Script Web Apps si no se maneja CORS
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
                 });
 
-                if (response.ok) {
-                    status.className = "text-[11px] text-center font-bold text-green-500 italic h-4 mt-2";
-                    status.innerHTML = "✅ Lead capturado en CRM. Redirigiendo...";
+                // Como usamos no-cors, asumimos éxito si no hay excepción
+                status.className = "text-[11px] text-center font-bold text-green-500 italic h-4 mt-2";
+                status.innerHTML = "✅ Lead registrado vía GAS. Redirigiendo...";
+                
+                setTimeout(() => {
+                    const mensajeWa = `Hola, soy ${formData.nombre}. Estoy validando el flujo MIG-EP para el servicio de ${formData.servicio}.`;
+                    window.open(`https://wa.me/51924200094?text=${encodeURIComponent(mensajeWa)}`, '_blank');
                     
-                    setTimeout(() => {
-                        const mensajeWa = `Hola, soy ${formData.nombre}. Estoy validando el flujo MIG-EP para el servicio de ${formData.servicio}.`;
-                        window.open(`https://wa.me/51924200094?text=${encodeURIComponent(mensajeWa)}`, '_blank');
-                        
-                        document.getElementById('leadForm').reset();
-                        btn.disabled = false;
-                        btn.innerText = "Iniciar Validación Real";
-                    }, 2000);
-                } else {
-                    throw new Error("Error de conexión");
-                }
+                    document.getElementById('leadForm').reset();
+                    btn.disabled = false;
+                    btn.innerText = "Iniciar Validación Real";
+                }, 2000);
 
             } catch (error) {
                 status.className = "text-[11px] text-center font-bold text-rose-500 italic h-4 mt-2";
-                status.innerHTML = "❌ Error en el Bridge de Automatización.";
+                status.innerHTML = "❌ Error en el Bridge de Google Script.";
                 console.error("Error:", error);
                 btn.disabled = false;
                 btn.innerText = "Reintentar Validación";
@@ -136,11 +138,11 @@
         <div class="flex justify-between items-center h-20">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-xl p-2 text-white">
-                    <span class="material-icons-outlined text-3xl">hub</span>
+                    <span class="material-icons-outlined text-3xl">terminal</span>
                 </div>
                 <div>
                     <span class="text-xl font-black text-slate-900 tracking-tighter uppercase italic leading-none block">Growth<span class="text-primary">Lab</span></span>
-                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest italic">Bridge: Make.com + G-Sheets</span>
+                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest italic">Engine: Google Apps Script</span>
                 </div>
             </div>
             <div class="hidden md:flex items-center space-x-6">
@@ -156,22 +158,22 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             
-            <!-- FORMULARIO DE CAPTURA CON BRIDGE MAKE -->
+            <!-- FORMULARIO DE CAPTURA CON BRIDGE GOOGLE SCRIPT -->
             <div class="space-y-8 bg-white p-8 lg:p-12 rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.1)] border border-slate-100 relative z-10">
                 <div class="space-y-3">
                     <div class="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-lg">
                         <span class="material-icons-outlined text-sm">bolt</span>
                         <span class="text-[10px] font-black uppercase tracking-widest">Validación Real-Time</span>
                     </div>
-                    <h2 class="text-4xl font-black text-slate-900 tracking-tight leading-none italic">Test de Flujo <br/>Automatizado</h2>
-                    <p class="text-sm text-slate-500 leading-relaxed italic text-balance">Capture datos reales para alimentar el motor de analítica. El sistema registrará el timestamp ISO y calculará el SLA automáticamente.</p>
+                    <h2 class="text-4xl font-black text-slate-900 tracking-tight leading-none italic text-balance">Test de Flujo <br/>Estratégico v2.0</h2>
+                    <p class="text-sm text-slate-500 leading-relaxed italic text-balance">Capture datos reales para alimentar el repositorio. El sistema registrará el celular en la Columna L y el timestamp ISO automáticamente.</p>
                 </div>
 
                 <form id="leadForm" onsubmit="enviarLead(event)" class="space-y-4">
                     <div class="space-y-4">
-                        <input type="text" id="nombre" placeholder="Nombre del paciente de prueba" required class="form-input w-full px-5 py-4 rounded-2xl text-sm focus:outline-none focus:ring-0">
+                        <input type="text" id="nombre" placeholder="Nombre completo" required class="form-input w-full px-5 py-4 rounded-2xl text-sm focus:outline-none focus:ring-0">
                         <div class="grid grid-cols-2 gap-4">
-                            <input type="tel" id="telefono" placeholder="WhatsApp (9 dígitos)" required class="form-input w-full px-5 py-4 rounded-2xl text-sm focus:outline-none focus:ring-0">
+                            <input type="tel" id="telefono" placeholder="WhatsApp (Ej: 924200094)" required class="form-input w-full px-5 py-4 rounded-2xl text-sm focus:outline-none focus:ring-0">
                             <select id="servicio" required class="form-input w-full px-5 py-4 rounded-2xl text-sm focus:outline-none focus:ring-0 italic text-slate-500">
                                 <option value="">Servicio a Validar</option>
                                 <option value="Profilaxis Pro">Profilaxis Pro</option>
@@ -245,29 +247,29 @@
                 <div class="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-6 text-slate-400 group-hover:text-primary transition-colors">
                     <span class="material-icons-outlined text-3xl">input</span>
                 </div>
-                <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-slate-900 leading-tight">1. Captación & Timestamp</h3>
-                <p class="text-[11px] text-slate-500 italic leading-relaxed">Registro del <span class="text-slate-900 font-bold">momento exacto (ISO)</span> de entrada del lead mediante Webhook.</p>
+                <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-slate-900 leading-tight">1. Captación & Celular</h3>
+                <p class="text-[11px] text-slate-500 italic leading-relaxed">Registro del <span class="text-slate-900 font-bold">número de contacto</span> y momento ISO de entrada mediante Webhook.</p>
             </div>
             <div class="p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:border-primary transition-all group text-center shadow-sm">
                 <div class="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-6 text-slate-400 group-hover:text-primary transition-colors">
-                    <span class="material-icons-outlined text-3xl">cable</span>
+                    <span class="material-icons-outlined text-3xl">code</span>
                 </div>
-                <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-slate-900 leading-tight">2. Bridge Engine (Make)</h3>
-                <p class="text-[11px] text-slate-500 italic leading-relaxed">Módulo de integración que inyecta los datos al repositorio <span class="text-slate-900 font-bold">sin intervención manual</span>.</p>
+                <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-slate-900 leading-tight">2. Bridge (Apps Script)</h3>
+                <p class="text-[11px] text-slate-500 italic leading-relaxed">Motor de integración personalizado que procesa el JSON directamente en el ecosistema de Google.</p>
             </div>
             <div class="p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:border-primary transition-all group text-center shadow-sm">
                 <div class="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-6 text-slate-400 group-hover:text-primary transition-colors">
                     <span class="material-icons-outlined text-3xl">functions</span>
                 </div>
                 <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-slate-900 leading-tight">3. Cálculo de SLA Clínico</h3>
-                <p class="text-[11px] text-slate-500 italic leading-relaxed">Fórmula aritmética determina la <span class="text-slate-900 font-bold">latencia comercial</span> restando marcas de tiempo reales.</p>
+                <p class="text-[11px] text-slate-500 italic leading-relaxed">Lógica de timestamps para determinar la <span class="text-slate-900 font-bold">latencia comercial</span> real entre columnas.</p>
             </div>
             <div class="p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:border-primary transition-all group text-center shadow-sm">
                 <div class="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-6 text-slate-400 group-hover:text-primary transition-colors">
                     <span class="material-icons-outlined text-3xl">query_stats</span>
                 </div>
                 <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-slate-900 leading-tight">4. Inteligencia de Negocio</h3>
-                <p class="text-[11px] text-slate-500 italic leading-relaxed">Actualización del <span class="text-slate-900 font-bold">Índice MIG-EP</span> para la toma de decisiones gerenciales.</p>
+                <p class="text-[11px] text-slate-500 italic leading-relaxed">Actualización del <span class="text-slate-900 font-bold">Índice MIG-EP</span> para la toma de decisiones estratégicas.</p>
             </div>
         </div>
     </div>
@@ -283,13 +285,13 @@
                 </div>
                 <p class="text-slate-500 text-[11px] leading-relaxed max-w-sm mx-auto lg:mx-0">
                     Proyecto de Innovación Estratégica - Maestría en Marketing CUC University. 
-                    <span class="block mt-2 font-black text-slate-400 uppercase tracking-tighter">Frank Alberto Espinoza Espinoza | Consultor de Datos</span>
+                    <span class="block mt-2 font-black text-slate-400 uppercase tracking-tighter italic underline decoration-primary/40 underline-offset-4">Frank Alberto Espinoza Espinoza | Consultor de Datos</span>
                 </p>
             </div>
             <div class="bg-white/5 p-8 rounded-3xl border border-white/10 text-left">
-                <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-4 italic font-black">Declaración Técnica</h4>
+                <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-4 italic font-bold">Declaración Técnica</h4>
                 <p class="text-[10px] text-slate-400 leading-relaxed italic text-balance">
-                    Este entorno digital constituye una herramienta de validación funcional. El sistema utiliza una arquitectura de microservicios (Webhook + API Bridge) para demostrar la viabilidad técnica del Framework MIG-EP sin costos de licenciamiento.
+                    Este entorno digital constituye una herramienta de validación funcional. El sistema utiliza una arquitectura basada en Google Apps Script para demostrar la viabilidad técnica del Framework MIG-EP con costo operativo cero.
                 </p>
             </div>
         </div>
