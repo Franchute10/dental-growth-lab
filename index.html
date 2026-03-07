@@ -62,7 +62,6 @@
                 // Envío asíncrono modo no-cors para evitar bloqueos de seguridad de Google
                 await fetch(webhookURL, {
                     method: 'POST',
-                    mode: 'no-cors', 
                     headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify(formData)
                 });
@@ -311,3 +310,4 @@
 
 </body>
 </html>
+
