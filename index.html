@@ -79,10 +79,12 @@
                formData.append("fuente", "Validación Web Lab");
 
                await fetch(webhookURL, {
-               method:"POST",
-               body:formData
+               method: "POST",
+               headers: {
+               "Content-Type": "application/json"
+               },
+               body: JSON.stringify(formData)
                });
-
                status.innerHTML = "Lead registrado";
 
                }
@@ -331,6 +333,7 @@
 
 </body>
 </html>
+
 
 
 
