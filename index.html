@@ -4,7 +4,7 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>SISTEMA MIG-EP - Optimización Dental</title>
-    <!-- Carga de librerías externas -->
+    <!-- Carga de Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
@@ -33,82 +33,70 @@
         };
 
         /**
-         * Función: enviarLead
-         * Propósito: Bridge entre la Web y Google Apps Script
-         * Captura: nombre, celular (Columna L), servicio y timestamp ISO
+         * Función: enviarLead (Versión Optimizada v2.7)
+         * Aplica validación de respuesta, sanitización de datos y restauración de UI.
          */
         async function enviarLead(event) {
             event.preventDefault();
             const btn = document.getElementById('btnSubmit');
             const status = document.getElementById('formStatus');
             
-            // UI Feedback: Estado de procesamiento
+            // 1. UI Feedback: Estado de procesamiento
             btn.disabled = true;
             btn.innerHTML = `<span class="material-icons-outlined animate-spin text-sm">sync</span> Procesando...`;
             status.innerHTML = "";
 
+            // 2. Sanitización del teléfono (Solo números para evitar errores en WhatsApp/Excel)
+            const telefonoSanitizado = document.getElementById('telefono').value.replace(/\D/g, '');
+
+            // 3. Definición de los datos a enviar
             const formData = {
                 nombre: document.getElementById('nombre').value,
-                celular: document.getElementById('telefono').value, // Enlace directo a Columna L
+                celular: telefonoSanitizado,
                 servicio: document.getElementById('servicio').value,
                 fuente: "Validación Web Lab",
-                timestamp_entrada: new Date().toISOString() // Estandarización de tiempo para ingeniería
+                timestamp_entrada: new Date().toISOString()
             };
 
+            // URL de Webhook de Google Apps Script
+            const webhookURL = "https://script.google.com/macros/s/AKfycbzhtIlg32sshx-IkSmI3Lr7xivAFpP8MIpPupE31ZlK8IbOP0JtgpMCK4XS8WWqe-tq/exec";
+
             try {
-                // Endpoint de Google Apps Script actualizado
-                const webhookURL = "https://script.google.com/macros/s/AKfycbzhtIlg32sshx-IkSmI3Lr7xivAFpP8MIpPupE31ZlK8IbOP0JtgpMCK4XS8WWqe-tq/exec"; 
-                
-                // Envío asíncrono modo no-cors para evitar bloqueos de seguridad de Google
-               async function enviarLead(event) {
+                // 4. Ejecución del fetch con validación de respuesta
+                const response = await fetch(webhookURL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(formData)
+                });
 
-               event.preventDefault();
+                if (!response.ok) {
+                    throw new Error("Error en la respuesta del servidor");
+                }
 
-               const btn = document.getElementById('btnSubmit');
-               const status = document.getElementById('formStatus');
-
-               btn.disabled = true;
-
-               const webhookURL = "https://script.google.com/macros/s/AKfycbzhtIlg32sshx-IkSmI3Lr7xivAFpP8MIpPupE31ZlK8IbOP0JtgpMCK4XS8WWqe-tq/exec";
-
-               const formData = new FormData();
-
-               formData.append("nombre", document.getElementById("nombre").value);
-               formData.append("celular", document.getElementById("telefono").value);
-               formData.append("servicio", document.getElementById("servicio").value);
-               formData.append("fuente", "Validación Web Lab");
-
-               await fetch(webhookURL, {
-               method: "POST",
-               headers: {
-               "Content-Type": "application/json"
-               },
-               body: JSON.stringify(formData)
-               });
-               status.innerHTML = "Lead registrado";
-
-               }
-
-                // Éxito en el envío
+                // 5. Notificación de éxito visual
                 status.className = "text-[11px] text-center font-bold text-green-500 italic h-4 mt-2";
-                status.innerHTML = "✅ Lead registrado en Columna L. Iniciando atención...";
+                status.innerHTML = "✅ Registro exitoso. Abriendo canal de atención...";
                 
                 setTimeout(() => {
                     const mensajeWa = `Hola, soy ${formData.nombre}. Consulto sobre el servicio de ${formData.servicio}. (Ref: MIG-EP Lab)`;
                     window.open(`https://wa.me/51924200094?text=${encodeURIComponent(mensajeWa)}`, '_blank');
                     
+                    // 6. Restauración de UI e Icono
                     document.getElementById('leadForm').reset();
                     btn.disabled = false;
-                    btn.innerText = "Iniciar Validación Real";
+                    btn.innerHTML = `<span class="material-icons-outlined">rocket_launch</span> Iniciar Validación Real`;
                     status.innerHTML = "";
                 }, 2000);
 
             } catch (error) {
+                // Manejo de errores
                 status.className = "text-[11px] text-center font-bold text-rose-500 italic h-4 mt-2";
-                status.innerHTML = "❌ Error en la conexión con GAS. Reintentar.";
-                console.error("Error técnico detectado:", error);
+                status.innerHTML = "❌ Error en el Bridge. Reintente el envío.";
+                console.error("Detalle técnico:", error);
                 btn.disabled = false;
-                btn.innerText = "Reintentar Envío";
+                btn.innerHTML = `<span class="material-icons-outlined">rocket_launch</span> Reintentar Validación`;
             }
         }
     </script>
@@ -166,7 +154,7 @@
                 </div>
                 <div>
                     <span class="text-xl font-black text-slate-900 tracking-tighter uppercase italic leading-none block">Growth<span class="text-primary">Lab</span></span>
-                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest italic">Engine: Google Script v2.1</span>
+                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest italic">Engine: Google Script Bridge</span>
                 </div>
             </div>
             <div class="hidden md:flex items-center space-x-6">
@@ -182,15 +170,15 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             
-            <!-- FORMULARIO DE CAPTURA ACTUALIZADO CON MAPEO L -->
+            <!-- FORMULARIO DE CAPTURA CON BRIDGE GAS -->
             <div class="space-y-8 bg-white p-8 lg:p-12 rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.1)] border border-slate-100 relative z-10">
                 <div class="space-y-3">
                     <div class="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-lg">
                         <span class="material-icons-outlined text-sm">bolt</span>
-                        <span class="text-[10px] font-black uppercase tracking-widest">Validación Real-Time v2.5</span>
+                        <span class="text-[10px] font-black uppercase tracking-widest">Validación Real-Time v2.7</span>
                     </div>
                     <h2 class="text-4xl font-black text-slate-900 tracking-tight leading-none italic">Test de Flujo <br/>Automatizado</h2>
-                    <p class="text-sm text-slate-500 leading-relaxed italic text-balance">Complete los datos de prueba. El sistema registrará el celular y el timestamp ISO en su Google Sheet para el cálculo estratégico del SLA.</p>
+                    <p class="text-sm text-slate-500 leading-relaxed italic text-balance">Ingrese datos para validar el bridge. Los datos llegarán sanitizados a la Columna L y se calculará el SLA automáticamente.</p>
                 </div>
 
                 <form id="leadForm" onsubmit="enviarLead(event)" class="space-y-4">
@@ -215,7 +203,7 @@
                     <p id="formStatus" class="text-[10px] text-center font-bold h-4"></p>
                 </form>
 
-                <!-- MÉTRICAS DE COHERENCIA CON DASHBOARD -->
+                <!-- KPI SYNC SUMMARY -->
                 <div class="flex items-center justify-between pt-8 border-t border-slate-100">
                     <div class="text-center">
                         <span class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Conversión</span>
@@ -232,12 +220,12 @@
                 </div>
             </div>
 
-            <!-- DASHBOARD REAL INTEGRADO -->
+            <!-- DASHBOARD REAL -->
             <div class="relative group" id="dashboard">
                 <div class="bg-white dark:bg-slate-800 p-4 rounded-[2.5rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] border border-slate-100 relative z-10 transition-all group-hover:shadow-2xl">
                     <div class="flex justify-between items-center mb-4 border-b pb-3 border-slate-50">
                         <div class="flex flex-col">
-                            <h3 class="font-black uppercase tracking-widest text-[10px] text-slate-400 italic">Panel de Control Gerencial</h3>
+                            <h3 class="font-black uppercase tracking-widest text-[10px] text-slate-400 italic">Dashboard Gerencial Activo</h3>
                             <span class="text-[8px] font-bold text-primary uppercase italic">Fuente: Looker Studio Sync</span>
                         </div>
                         <div class="flex items-center gap-2">
@@ -272,7 +260,7 @@
                     <span class="material-icons-outlined text-3xl">input</span>
                 </div>
                 <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-slate-900 leading-tight">1. Captación & Celular</h3>
-                <p class="text-[11px] text-slate-500 italic leading-relaxed">Registro del <span class="text-slate-900 font-bold">número de contacto</span> y momento ISO de entrada mediante el bridge.</p>
+                <p class="text-[11px] text-slate-500 italic leading-relaxed">Registro del <span class="text-slate-900 font-bold">número de contacto</span> y momento ISO mediante bridge.</p>
             </div>
             <div class="p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:border-primary transition-all group text-center shadow-sm">
                 <div class="w-16 h-16 bg-white rounded-2xl shadow-inner flex items-center justify-center mx-auto mb-6 text-slate-400 group-hover:text-primary transition-colors">
@@ -286,14 +274,14 @@
                     <span class="material-icons-outlined text-3xl">functions</span>
                 </div>
                 <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-slate-900 leading-tight">3. Cálculo de SLA Clínico</h3>
-                <p class="text-[11px] text-slate-500 italic leading-relaxed">Fórmulas aritméticas que determinan la <span class="text-slate-900 font-bold">latencia comercial</span> real del asesor.</p>
+                <p class="text-[11px] text-slate-500 italic leading-relaxed">Lógica de timestamps para determinar la <span class="text-slate-900 font-bold">latencia comercial</span> real.</p>
             </div>
             <div class="p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:border-primary transition-all group text-center shadow-sm">
                 <div class="w-16 h-16 bg-white rounded-2xl shadow-inner flex items-center justify-center mx-auto mb-6 text-slate-400 group-hover:text-primary transition-colors">
                     <span class="material-icons-outlined text-3xl">leaderboard</span>
                 </div>
                 <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-slate-900 leading-tight">4. Business Intelligence</h3>
-                <p class="text-[11px] text-slate-500 italic leading-relaxed">Actualización del <span class="text-slate-900 font-bold">Índice MIG-EP</span> para la toma de decisiones gerenciales.</p>
+                <p class="text-[11px] text-slate-500 italic leading-relaxed">Actualización del <span class="text-slate-900 font-bold">Índice MIG-EP</span> para toma de decisiones.</p>
             </div>
         </div>
     </div>
@@ -315,7 +303,7 @@
             <div class="bg-white/5 p-8 rounded-3xl border border-white/10 text-left">
                 <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-4 italic font-bold">Validación Técnica del Framework</h4>
                 <p class="text-[10px] text-slate-400 leading-relaxed italic text-balance">
-                    Este entorno digital constituye una herramienta de validación funcional. El sistema utiliza una arquitectura basada en Google Apps Script para demostrar la viabilidad técnica del Framework MIG-EP con costo operativo cero y alta eficiencia en la trazabilidad.
+                    Este entorno digital constituye una herramienta de validación funcional. El sistema utiliza una arquitectura basada en Google Apps Script para demostrar la viabilidad técnica del Framework MIG-EP con costo operativo cero.
                 </p>
             </div>
         </div>
@@ -333,8 +321,3 @@
 
 </body>
 </html>
-
-
-
-
-
