@@ -33,7 +33,7 @@
         };
 
         /**
-         * Función: enviarLead (Versión Optimizada v2.9)
+         * Función: enviarLead (Versión Optimizada v3.0)
          * Propósito: Captura datos, sanitiza el teléfono y los envía al Google Script Bridge.
          */
         async function enviarLead(event) {
@@ -41,38 +41,36 @@
             const btn = document.getElementById('btnSubmit');
             const status = document.getElementById('formStatus');
             
-            // 1. UI Feedback: Estado de procesamiento
+            // 1. UI Feedback
             btn.disabled = true;
             btn.innerHTML = `<span class="material-icons-outlined animate-spin text-sm">sync</span> Procesando...`;
             status.innerHTML = "";
 
-            // 2. Sanitización del teléfono (Solo números para evitar errores en WhatsApp/Excel)
+            // 2. Sanitización del teléfono
             const telefonoLimpio = document.getElementById('telefono').value.replace(/\D/g, '');
 
-            // 3. Definición de los datos a enviar (Coincide con las claves en tu GAS)
+            // 3. Definición de los datos a enviar
             const formData = {
                 nombre: document.getElementById('nombre').value,
-                celular: telefonoLimpio, // Se registra en la Columna L
+                celular: telefonoLimpio,
                 servicio: document.getElementById('servicio').value,
                 fuente: "Validación Web Lab",
                 timestamp_entrada: new Date().toISOString()
             };
 
-            // URL de Webhook de tu Google Apps Script (v2.6+)
+            // URL de tu Google Apps Script
             const webhookURL = "https://script.google.com/macros/s/AKfycbzhtIlg32sshx-IkSmI3Lr7xivAFpP8MIpPupE31ZlK8IbOP0JtgpMCK4XS8WWqe-tq/exec";
 
             try {
-                // 4. Ejecución del fetch con validación
-                const response = await fetch(webhookURL, {
+                // 4. Ejecución del fetch
+                await fetch(webhookURL, {
                     method: "POST",
-                    mode: "no-cors", // Requerido para Apps Script por redireccionamiento
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    mode: "no-cors", 
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(formData)
                 });
 
-                // 5. Notificación de éxito visual
+                // 5. Notificación de éxito
                 status.className = "text-[11px] text-center font-bold text-green-500 italic h-4 mt-2";
                 status.innerHTML = "✅ Registro exitoso. Abriendo WhatsApp...";
                 
@@ -80,7 +78,6 @@
                     const mensajeWa = `Hola, soy ${formData.nombre}. Consulto sobre el servicio de ${formData.servicio}. (Ref: MIG-EP Lab)`;
                     window.open(`https://wa.me/51924200094?text=${encodeURIComponent(mensajeWa)}`, '_blank');
                     
-                    // 6. Restauración de UI e Icono original
                     document.getElementById('leadForm').reset();
                     btn.disabled = false;
                     btn.innerHTML = `<span class="material-icons-outlined">rocket_launch</span> Iniciar Validación Real`;
@@ -88,10 +85,8 @@
                 }, 2000);
 
             } catch (error) {
-                // Manejo de errores técnicos
                 status.className = "text-[11px] text-center font-bold text-rose-500 italic h-4 mt-2";
                 status.innerHTML = "❌ Error en el Bridge. Reintente el envío.";
-                console.error("Detalle técnico:", error);
                 btn.disabled = false;
                 btn.innerHTML = `<span class="material-icons-outlined">rocket_launch</span> Reintentar Validación`;
             }
@@ -151,13 +146,13 @@
                 </div>
                 <div>
                     <span class="text-xl font-black text-slate-900 tracking-tighter uppercase italic leading-none block">Growth<span class="text-primary">Lab</span></span>
-                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest italic">Engine: Google Script Bridge</span>
+                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest italic tracking-tighter">MIG-EP Framework v3.0</span>
                 </div>
             </div>
             <div class="hidden md:flex items-center space-x-6">
                 <a class="text-xs font-black uppercase tracking-widest hover:text-primary transition-colors" href="#problema">Diagnóstico</a>
                 <a class="text-xs font-black uppercase tracking-widest hover:text-primary transition-colors" href="#metodologia">Metodología</a>
-                <a href="#dashboard" class="bg-primary text-white px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-105 transition-transform">Control de Gestión</a>
+                <a href="#dashboard" class="bg-primary text-white px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-105 transition-transform">Dashboard Real</a>
             </div>
         </div>
     </div>
@@ -172,17 +167,17 @@
                 <div class="space-y-3">
                     <div class="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-lg">
                         <span class="material-icons-outlined text-sm">bolt</span>
-                        <span class="text-[10px] font-black uppercase tracking-widest">Validación Real-Time v2.9</span>
+                        <span class="text-[10px] font-black uppercase tracking-widest italic">Live Data Tracking</span>
                     </div>
                     <h2 class="text-4xl font-black text-slate-900 tracking-tight leading-none italic">Test de Flujo <br/>Automatizado</h2>
-                    <p class="text-sm text-slate-500 leading-relaxed italic text-balance">Complete los datos para validar el bridge. El sistema sanitiza el número y registra el timestamp ISO en la Columna L automáticamente.</p>
+                    <p class="text-sm text-slate-500 leading-relaxed italic text-balance">Ingrese datos de prueba para alimentar el motor analítico. Los registros impactan en el Índice MIG-EP de forma inmediata.</p>
                 </div>
 
                 <form id="leadForm" onsubmit="enviarLead(event)" class="space-y-4">
                     <div class="space-y-4">
                         <input type="text" id="nombre" placeholder="Nombre completo" required class="form-input w-full px-5 py-4 rounded-2xl text-sm focus:outline-none focus:ring-0 text-slate-900 font-medium">
                         <div class="grid grid-cols-2 gap-4">
-                            <input type="tel" id="telefono" placeholder="WhatsApp (Ej: 924200094)" required class="form-input w-full px-5 py-4 rounded-2xl text-sm focus:outline-none focus:ring-0 text-slate-900 font-medium">
+                            <input type="tel" id="telefono" placeholder="WhatsApp (9 dígitos)" required class="form-input w-full px-5 py-4 rounded-2xl text-sm focus:outline-none focus:ring-0 text-slate-900 font-medium">
                             <select id="servicio" required class="form-input w-full px-5 py-4 rounded-2xl text-sm focus:outline-none focus:ring-0 italic text-slate-500">
                                 <option value="">Servicio a Validar</option>
                                 <option value="Profilaxis Pro">Profilaxis Pro</option>
@@ -200,19 +195,23 @@
                     <p id="formStatus" class="text-[10px] text-center font-bold h-4"></p>
                 </form>
 
-                <!-- KPI SYNC SUMMARY -->
+                <!-- KPI SYNC ACTUALIZADOS SEGÚN DASHBOARD 09/03 -->
                 <div class="flex items-center justify-between pt-8 border-t border-slate-100">
                     <div class="text-center">
-                        <span class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Conversión</span>
-                        <span class="text-2xl font-black text-slate-900">54.0%</span>
+                        <span class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Leads</span>
+                        <span class="text-2xl font-black text-slate-900">118</span>
                     </div>
                     <div class="text-center">
-                        <span class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">SLA Medio</span>
-                        <span class="text-2xl font-black text-primary">8.01m</span>
+                        <span class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Conversión</span>
+                        <span class="text-2xl font-black text-slate-900">45.76%</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">SLA</span>
+                        <span class="text-2xl font-black text-primary">5.07m</span>
                     </div>
                     <div class="text-center">
                         <span class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Index MIG-EP</span>
-                        <span class="text-2xl font-black text-yellow-500 italic">59.81</span>
+                        <span class="text-2xl font-black text-teal-500 italic">70.8</span>
                     </div>
                 </div>
             </div>
@@ -223,7 +222,7 @@
                     <div class="flex justify-between items-center mb-4 border-b pb-3 border-slate-50">
                         <div class="flex flex-col">
                             <h3 class="font-black uppercase tracking-widest text-[10px] text-slate-400 italic">Dashboard Gerencial Activo</h3>
-                            <span class="text-[8px] font-bold text-primary uppercase italic text-balance">Motor: Looker Studio Sync</span>
+                            <span class="text-[8px] font-bold text-primary uppercase italic">Fuente: Looker Studio Sync</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
@@ -239,46 +238,86 @@
                         </iframe>
                     </div>
                 </div>
+                <!-- FRASE EXPLICATIVA SOLICITADA -->
+                <p class="mt-6 text-[11px] text-slate-500 italic text-center font-medium px-4">
+                    "El Índice MIG-EP sintetiza la eficiencia del proceso comercial considerando conversión, no-show y velocidad de respuesta."
+                </p>
             </div>
         </div>
     </div>
 </header>
 
-<section class="py-24 bg-white" id="metodologia">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left">
+<!-- SECCIÓN: DIAGNÓSTICO -->
+<section class="py-24 bg-white" id="problema">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-20 items-center">
+            <div class="space-y-8 text-center lg:text-left">
+                <h2 class="text-xs font-black text-primary uppercase tracking-[0.3em] italic">Fase de Diagnóstico Sectorial</h2>
+                <h3 class="text-4xl lg:text-5xl font-black text-slate-900 leading-tight tracking-tight">Análisis de Fricción <br/>Comercial</h3>
+                <p class="text-slate-500 text-lg leading-relaxed text-balance">
+                    Mediante el monitoreo del repositorio, se identificaron brechas críticas que afectan la rentabilidad directa de la sede.
+                </p>
+                <div class="space-y-4">
+                    <div class="flex items-start gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-100 text-left">
+                        <div class="w-12 h-12 bg-rose-500/10 rounded-xl flex items-center justify-center text-rose-500 shrink-0">
+                            <span class="material-icons-outlined text-2xl">priority_high</span>
+                        </div>
+                        <p class="text-sm text-slate-500 leading-relaxed"><span class="text-slate-900 font-black block uppercase tracking-tighter">Optimización del SLA:</span> La reducción a un promedio de <span class="font-bold">5.07 min</span> ha permitido recuperar un 12% de intención de compra comparado con la media sectorial.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-6">
+                <div class="p-8 bg-slate-900 text-white rounded-[2.5rem] shadow-xl">
+                    <span class="text-4xl font-black text-primary italic">46.3%</span>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-2 italic text-balance tracking-tighter">No-Show Detectado</p>
+                    <p class="text-[9px] text-slate-500 mt-4 leading-relaxed italic text-balance">Punto crítico de mejora: El ausentismo impacta directamente en la productividad del especialista.</p>
+                </div>
+                <div class="p-8 bg-slate-100 text-slate-900 rounded-[2.5rem]">
+                    <span class="text-4xl font-black italic">45.8%</span>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-2 italic text-balance tracking-tighter">Conversión actual</p>
+                    <p class="text-[9px] text-slate-500 mt-4 leading-relaxed italic text-balance">Ratio de éxito desde primer contacto a cita agendada bajo protocolos MIG-EP.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECCIÓN: ARQUITECTURA TÉCNICA -->
+<section class="py-24 bg-slate-50 border-y border-slate-100" id="metodologia">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-20 space-y-3">
-            <h2 class="text-xs font-black text-primary uppercase tracking-[0.3em] mb-4 italic text-center">Ingeniería de Procesos</h2>
-            <h3 class="text-4xl font-black text-slate-900 tracking-tight font-display text-center">Trazabilidad Automatizada del SLA</h3>
+            <h2 class="text-xs font-black text-primary uppercase tracking-[0.3em] italic">Ingeniería de Procesos</h2>
+            <h3 class="text-4xl font-black text-slate-900 tracking-tight font-display text-center uppercase italic">Trazabilidad Automatizada</h3>
         </div>
         
         <div class="grid md:grid-cols-4 gap-8">
-            <div class="p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:border-primary transition-all group text-center shadow-sm">
-                <div class="w-16 h-16 bg-white rounded-2xl shadow-inner flex items-center justify-center mx-auto mb-6 text-slate-400 group-hover:text-primary transition-colors">
+            <div class="p-8 bg-white rounded-3xl border border-slate-100 hover:border-primary transition-all group text-center shadow-sm">
+                <div class="w-16 h-16 bg-slate-50 rounded-2xl shadow-inner flex items-center justify-center mx-auto mb-6 text-slate-400 group-hover:text-primary transition-colors">
                     <span class="material-icons-outlined text-3xl">input</span>
                 </div>
                 <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-slate-900 leading-tight">1. Captación & Celular</h3>
-                <p class="text-[11px] text-slate-500 italic leading-relaxed">Registro del <span class="text-slate-900 font-bold">número de contacto</span> y momento ISO mediante el bridge.</p>
+                <p class="text-[11px] text-slate-500 italic leading-relaxed">Registro del <span class="text-slate-900 font-bold">número sanitizado</span> y momento ISO mediante Bridge GAS.</p>
             </div>
-            <div class="p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:border-primary transition-all group text-center shadow-sm">
-                <div class="w-16 h-16 bg-white rounded-2xl shadow-inner flex items-center justify-center mx-auto mb-6 text-slate-400 group-hover:text-primary transition-colors">
+            <div class="p-8 bg-white rounded-3xl border border-slate-100 hover:border-primary transition-all group text-center shadow-sm">
+                <div class="w-16 h-16 bg-slate-50 rounded-2xl shadow-inner flex items-center justify-center mx-auto mb-6 text-slate-400 group-hover:text-primary transition-colors">
                     <span class="material-icons-outlined text-3xl">code</span>
                 </div>
-                <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-slate-900 leading-tight">2. Bridge Engine (GAS)</h3>
-                <p class="text-[11px] text-slate-500 italic leading-relaxed">Motor personalizado que inyecta datos al CRM <span class="text-slate-900 font-bold">sin intervención manual</span>.</p>
+                <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-slate-900 leading-tight">2. Bridge Engine</h3>
+                <p class="text-[11px] text-slate-500 italic leading-relaxed">Módulo personalizado que inyecta datos al CRM <span class="text-slate-900 font-bold">sin intervención manual</span>.</p>
             </div>
-            <div class="p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:border-primary transition-all group text-center shadow-sm">
+            <div class="p-8 bg-white rounded-3xl border border-slate-100 hover:border-primary transition-all group text-center shadow-sm">
                 <div class="w-16 h-16 bg-white rounded-2xl shadow-inner flex items-center justify-center mx-auto mb-6 text-slate-400 group-hover:text-primary transition-colors">
                     <span class="material-icons-outlined text-3xl">functions</span>
                 </div>
-                <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-slate-900 leading-tight">3. Cálculo de SLA Clínico</h3>
-                <p class="text-[11px] text-slate-500 italic leading-relaxed">Lógica de timestamps para determinar la <span class="text-slate-900 font-bold">latencia comercial</span> real.</p>
+                <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-slate-900 leading-tight">3. Cálculo de SLA</h3>
+                <p class="text-[11px] text-slate-500 italic leading-relaxed">Lógica de timestamps para determinar la <span class="text-slate-900 font-bold">latencia comercial</span> real del asesor.</p>
             </div>
-            <div class="p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:border-primary transition-all group text-center shadow-sm">
+            <div class="p-8 bg-white rounded-3xl border border-slate-100 hover:border-primary transition-all group text-center shadow-sm">
                 <div class="w-16 h-16 bg-white rounded-2xl shadow-inner flex items-center justify-center mx-auto mb-6 text-slate-400 group-hover:text-primary transition-colors">
                     <span class="material-icons-outlined text-3xl">leaderboard</span>
                 </div>
-                <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-slate-900 leading-tight">4. Business Intelligence</h3>
-                <p class="text-[11px] text-slate-500 italic leading-relaxed text-balance">Actualización del <span class="text-slate-900 font-bold">Índice MIG-EP</span> para la toma de decisiones estratégicas.</p>
+                <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-slate-900 leading-tight">4. BI Intelligence</h3>
+                <p class="text-[11px] text-slate-500 italic leading-relaxed text-balance">Actualización dinámica del <span class="text-slate-900 font-bold">Dashboard 70.8</span> para toma de decisiones.</p>
             </div>
         </div>
     </div>
@@ -293,14 +332,14 @@
                     <span class="text-2xl font-black tracking-tighter uppercase italic leading-none block">Growth<span class="text-primary">Lab</span></span>
                 </div>
                 <p class="text-slate-500 text-[11px] leading-relaxed max-w-sm mx-auto lg:mx-0">
-                    Proyecto de Innovación Estratégica - Maestría en Marketing CUC University. 
-                    <span class="block mt-2 font-black text-slate-400 uppercase tracking-tighter italic underline decoration-primary/40 underline-offset-4">Frank Alberto Espinoza Espinoza | Consultor de Datos</span>
+                    Propuesta de Innovación Estratégica - Maestría en Marketing CUC University. 
+                    <span class="block mt-2 font-black text-slate-400 uppercase tracking-tighter italic">Frank Alberto Espinoza Espinoza | Consultor de Datos</span>
                 </p>
             </div>
             <div class="bg-white/5 p-8 rounded-3xl border border-white/10 text-left">
-                <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-4 italic font-bold">Validación Técnica del Framework</h4>
+                <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-4 italic font-bold">Estado de Validación: Activo</h4>
                 <p class="text-[10px] text-slate-400 leading-relaxed italic text-balance">
-                    Este entorno digital constituye una herramienta de validación funcional. El sistema utiliza una arquitectura basada en Google Apps Script para demostrar la viabilidad técnica del Framework MIG-EP con costo operativo cero.
+                    Métricas actualizadas al 09/03/2026. Muestra representativa de 118 leads. Ecosistema digital 100% funcional integrado con Google Cloud Platform.
                 </p>
             </div>
         </div>
