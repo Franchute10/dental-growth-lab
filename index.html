@@ -1,359 +1,426 @@
 <!DOCTYPE html>
-<html class="light" lang="es">
+<html lang="es">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>SISTEMA MIG-EP - Optimización Dental</title>
-    <!-- Carga de Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEMA MIG-EP v2.0 - Optimización Dental</title>
     
+    <!-- Librerías de React y Babel para ejecutar JSX en el navegador -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS para el diseño -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Iconos (Lucide y Material Icons) -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <script>
         tailwind.config = {
-            darkMode: "class",
             theme: {
                 extend: {
                     colors: {
                         primary: "#0ea5e9",
                         secondary: "#23c2ad",
-                        "background-light": "#f8fafc",
-                        "background-dark": "#0f172a",
                     },
                     fontFamily: {
-                        display: ["Outfit", "sans-serif"],
                         body: ["Outfit", "sans-serif"],
-                    },
-                    borderRadius: {
-                        DEFAULT: "12px",
-                        "large": "24px",
                     },
                 },
             },
         };
-
-        /**
-         * Función: enviarLead (Versión Optimizada v3.0)
-         * Propósito: Captura datos, sanitiza el teléfono y los envía al Google Script Bridge.
-         */
-        async function enviarLead(event) {
-            event.preventDefault();
-            const btn = document.getElementById('btnSubmit');
-            const status = document.getElementById('formStatus');
-            
-            // 1. UI Feedback
-            btn.disabled = true;
-            btn.innerHTML = `<span class="material-icons-outlined animate-spin text-sm">sync</span> Procesando...`;
-            status.innerHTML = "";
-
-            // 2. Sanitización del teléfono
-            const telefonoLimpio = document.getElementById('telefono').value.replace(/\D/g, '');
-
-            // 3. Definición de los datos a enviar
-            const formData = {
-                nombre: document.getElementById('nombre').value,
-                celular: telefonoLimpio,
-                servicio: document.getElementById('servicio').value,
-                fuente: "Validación Web Lab",
-                timestamp_entrada: new Date().toISOString()
-            };
-
-            // URL de tu Google Apps Script
-            const webhookURL = "https://script.google.com/macros/s/AKfycbzhtIlg32sshx-IkSmI3Lr7xivAFpP8MIpPupE31ZlK8IbOP0JtgpMCK4XS8WWqe-tq/exec";
-
-            try {
-                // 4. Ejecución del fetch
-                await fetch(webhookURL, {
-                    method: "POST",
-                    mode: "no-cors", 
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(formData)
-                });
-
-                // 5. Notificación de éxito
-                status.className = "text-[11px] text-center font-bold text-green-500 italic h-4 mt-2";
-                status.innerHTML = "✅ Registro exitoso. Abriendo WhatsApp...";
-                
-                setTimeout(() => {
-                    const mensajeWa = `Hola, soy ${formData.nombre}. Consulto sobre el servicio de ${formData.servicio}. (Ref: MIG-EP Lab)`;
-                    window.open(`https://wa.me/51924200094?text=${encodeURIComponent(mensajeWa)}`, '_blank');
-                    
-                    document.getElementById('leadForm').reset();
-                    btn.disabled = false;
-                    btn.innerHTML = `<span class="material-icons-outlined">rocket_launch</span> Iniciar Validación Real`;
-                    status.innerHTML = "";
-                }, 2000);
-
-            } catch (error) {
-                status.className = "text-[11px] text-center font-bold text-rose-500 italic h-4 mt-2";
-                status.innerHTML = "❌ Error en el Bridge. Reintente el envío.";
-                btn.disabled = false;
-                btn.innerHTML = `<span class="material-icons-outlined">rocket_launch</span> Reintentar Validación`;
-            }
-        }
     </script>
 
     <style>
         body { font-family: 'Outfit', sans-serif; scroll-behavior: smooth; }
-        .gradient-bg {
-            background: linear-gradient(135deg, rgba(14, 165, 233, 0.12) 0%, rgba(35, 194, 173, 0.05) 100%);
-        }
-        .academic-badge {
-            background: #1e293b;
-            color: #38bdf8;
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        .iframe-container {
-            position: relative;
-            width: 100%;
-            padding-bottom: 78%; 
-            height: 0;
-            overflow: hidden;
-        }
-        .iframe-container iframe {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; border-radius: 1.5rem;
-        }
-        .form-input {
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            transition: all 0.2s ease;
-        }
-        .form-input:focus {
-            background-color: white;
-            border-color: #0ea5e9;
-            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
-        }
+        .gradient-bg { background: linear-gradient(135deg, rgba(14, 165, 233, 0.12) 0%, rgba(35, 194, 173, 0.05) 100%); }
+        /* Ocultar barra de scroll en el chat */
+        #chatMessages::-webkit-scrollbar { width: 4px; }
+        #chatMessages::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-700 dark:text-slate-300 transition-colors duration-300">
+<body class="bg-slate-50 text-slate-700">
 
-<!-- BARRA INSTITUCIONAL -->
-<div class="bg-slate-900 text-white text-[10px] py-2 text-center font-black tracking-[0.2em] uppercase">
-    PROYECTO DE INNOVACIÓN ESTRATÉGICA – MAESTRÍA EN MARKETING CUC (MODALIDAD 3)
-</div>
+    <div id="root"></div>
 
-<nav class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-20">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-xl p-2 text-white">
-                    <span class="material-icons-outlined text-3xl">terminal</span>
-                </div>
-                <div>
-                    <span class="text-xl font-black text-slate-900 tracking-tighter uppercase italic leading-none block">Growth<span class="text-primary">Lab</span></span>
-                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest italic tracking-tighter">MIG-EP Framework v3.0</span>
-                </div>
-            </div>
-            <div class="hidden md:flex items-center space-x-6">
-                <a class="text-xs font-black uppercase tracking-widest hover:text-primary transition-colors" href="#problema">Diagnóstico</a>
-                <a class="text-xs font-black uppercase tracking-widest hover:text-primary transition-colors" href="#metodologia">Metodología</a>
-                <a href="#dashboard" class="bg-primary text-white px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-105 transition-transform">Dashboard Real</a>
-            </div>
-        </div>
-    </div>
-</nav>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
 
-<header class="relative overflow-hidden pt-12 pb-20 lg:pt-16 gradient-bg border-b border-slate-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            
-            <!-- FORMULARIO DE CAPTURA CON BRIDGE GAS -->
-            <div class="space-y-8 bg-white p-8 lg:p-12 rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.1)] border border-slate-100 relative z-10">
-                <div class="space-y-3">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-lg">
-                        <span class="material-icons-outlined text-sm">bolt</span>
-                        <span class="text-[10px] font-black uppercase tracking-widest italic">Live Data Tracking</span>
-                    </div>
-                    <h2 class="text-4xl font-black text-slate-900 tracking-tight leading-none italic">Test de Flujo <br/>Automatizado</h2>
-                    <p class="text-sm text-slate-500 leading-relaxed italic text-balance">Ingrese datos de prueba para alimentar el motor analítico. Los registros impactan en el Índice MIG-EP de forma inmediata.</p>
-                </div>
+        // COMPONENTE DE ICONOS (LUCIDE REACT)
+        const Icon = ({ name, size = 20, className = "" }) => {
+            return <i className={`material-icons-outlined ${className}`} style={{ fontSize: size }}>{name}</i>;
+        };
 
-                <form id="leadForm" onsubmit="enviarLead(event)" class="space-y-4">
-                    <div class="space-y-4">
-                        <input type="text" id="nombre" placeholder="Nombre completo" required class="form-input w-full px-5 py-4 rounded-2xl text-sm focus:outline-none focus:ring-0 text-slate-900 font-medium">
-                        <div class="grid grid-cols-2 gap-4">
-                            <input type="tel" id="telefono" placeholder="WhatsApp (9 dígitos)" required class="form-input w-full px-5 py-4 rounded-2xl text-sm focus:outline-none focus:ring-0 text-slate-900 font-medium">
-                            <select id="servicio" required class="form-input w-full px-5 py-4 rounded-2xl text-sm focus:outline-none focus:ring-0 italic text-slate-500">
-                                <option value="">Servicio a Validar</option>
-                                <option value="Profilaxis Pro">Profilaxis Pro</option>
-                                <option value="Implantes Dentales">Implantes Dentales</option>
-                                <option value="Carillas">Carillas</option>
-                                <option value="Ortodoncia">Ortodoncia</option>
-                                <option value="Blanqueamiento">Blanqueamiento</option>
-                                <option value="Endodoncia">Endodoncia</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button type="submit" id="btnSubmit" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black shadow-xl hover:bg-primary transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-3 group">
-                        <span class="material-icons-outlined group-hover:rotate-12 transition-transform">rocket_launch</span> Iniciar Validación Real
-                    </button>
-                    <p id="formStatus" class="text-[10px] text-center font-bold h-4"></p>
-                </form>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzhtIlg32sshx-IkSmI3Lr7xivAFpP8MIpPupE31ZlK8IbOP0JtgpMCK4XS8WWqe-tq/exec";
 
-                <!-- KPI SYNC ACTUALIZADOS SEGÚN DASHBOARD 09/03 -->
-                <div class="flex items-center justify-between pt-8 border-t border-slate-100">
-                    <div class="text-center">
-                        <span class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Leads</span>
-                        <span class="text-2xl font-black text-slate-900">118</span>
-                    </div>
-                    <div class="text-center">
-                        <span class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Conversión</span>
-                        <span class="text-2xl font-black text-slate-900">45.76%</span>
-                    </div>
-                    <div class="text-center">
-                        <span class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">SLA</span>
-                        <span class="text-2xl font-black text-primary">5.07m</span>
-                    </div>
-                    <div class="text-center">
-                        <span class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Index MIG-EP</span>
-                        <span class="text-2xl font-black text-teal-500 italic">70.8</span>
-                    </div>
-                </div>
-            </div>
+        const App = () => {
+            // Estados para el formulario
+            const [formData, setFormData] = useState({
+                nombre: '',
+                email: '',
+                telefono: '',
+                servicio: ''
+            });
+            const [formStatus, setFormStatus] = useState({ type: '', message: '' });
+            const [isSubmitting, setIsSubmitting] = useState(false);
 
-            <!-- DASHBOARD REAL -->
-            <div class="relative group" id="dashboard">
-                <div class="bg-white dark:bg-slate-800 p-4 rounded-[2.5rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] border border-slate-100 relative z-10 transition-all group-hover:shadow-2xl">
-                    <div class="flex justify-between items-center mb-4 border-b pb-3 border-slate-50">
-                        <div class="flex flex-col">
-                            <h3 class="font-black uppercase tracking-widest text-[10px] text-slate-400 italic">Dashboard Gerencial Activo</h3>
-                            <span class="text-[8px] font-bold text-primary uppercase italic">Fuente: Looker Studio Sync</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                            <span class="text-[8px] font-black text-green-600 uppercase">En Vivo</span>
-                        </div>
-                    </div>
+            // Estados para el Chatbot
+            const [isChatOpen, setIsChatOpen] = useState(false);
+            const [chatInput, setChatInput] = useState('');
+            const [messages, setMessages] = useState([
+                { role: 'bot', text: 'Hola 👋 Soy el asistente IA de Sonrisa Segura Chacarilla. ¿Te gustaría conocer nuestros precios o agendar una evaluación hoy?' }
+            ]);
+            const [isTyping, setIsTyping] = useState(false);
+            const chatEndRef = useRef(null);
+
+            const scrollToBottom = () => {
+                chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            };
+
+            useEffect(() => {
+                scrollToBottom();
+            }, [messages]);
+
+            const handleInputChange = (e) => {
+                setFormData({ ...formData, [e.target.id]: e.target.value });
+            };
+
+            const enviarLead = async (event) => {
+                event.preventDefault();
+                setIsSubmitting(true);
+                setFormStatus({ type: '', message: '' });
+
+                const payload = {
+                    nombre: formData.nombre,
+                    email: formData.email,
+                    celular: formData.telefono.replace(/\D/g, ''),
+                    servicio: formData.servicio,
+                    fuente: "Formulario Web v2.0",
+                    timestamp_entrada: new Date().toISOString()
+                };
+
+                try {
+                    await fetch(SCRIPT_URL, {
+                        method: "POST",
+                        mode: "no-cors",
+                        body: JSON.stringify(payload)
+                    });
+
+                    setFormStatus({ type: 'success', message: '✅ Registro exitoso. Iniciando atención vía WhatsApp...' });
                     
-                    <div class="iframe-container bg-slate-50 rounded-2xl overflow-hidden shadow-inner border border-slate-100">
-                        <iframe 
-                            src="https://lookerstudio.google.com/embed/reporting/81a4bc5e-2ab0-47ba-97df-958db6ec4bb4/page/9tlqF" 
-                            allowfullscreen 
-                            sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
-                        </iframe>
-                    </div>
-                </div>
-                <!-- FRASE EXPLICATIVA SOLICITADA -->
-                <p class="mt-6 text-[11px] text-slate-500 italic text-center font-medium px-4">
-                    "El Índice MIG-EP sintetiza la eficiencia del proceso comercial considerando conversión, no-show y velocidad de respuesta."
-                </p>
-            </div>
-        </div>
-    </div>
-</header>
+                    setTimeout(() => {
+                        window.open(`https://wa.me/51924200094?text=Hola, soy ${formData.nombre}. Registré mi interés en ${formData.servicio}.`, '_blank');
+                        setFormData({ nombre: '', email: '', telefono: '', servicio: '' });
+                        setIsSubmitting(false);
+                    }, 2000);
 
-<!-- SECCIÓN: DIAGNÓSTICO -->
-<section class="py-24 bg-white" id="problema">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid lg:grid-cols-2 gap-20 items-center">
-            <div class="space-y-8 text-center lg:text-left">
-                <h2 class="text-xs font-black text-primary uppercase tracking-[0.3em] italic">Fase de Diagnóstico Sectorial</h2>
-                <h3 class="text-4xl lg:text-5xl font-black text-slate-900 leading-tight tracking-tight">Análisis de Fricción <br/>Comercial</h3>
-                <p class="text-slate-500 text-lg leading-relaxed text-balance">
-                    Mediante el monitoreo del repositorio, se identificaron brechas críticas que afectan la rentabilidad directa de la sede.
-                </p>
-                <div class="space-y-4">
-                    <div class="flex items-start gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-100 text-left">
-                        <div class="w-12 h-12 bg-rose-500/10 rounded-xl flex items-center justify-center text-rose-500 shrink-0">
-                            <span class="material-icons-outlined text-2xl">priority_high</span>
+                } catch (error) {
+                    setFormStatus({ type: 'error', message: '❌ Error en el Bridge de v2.0.' });
+                    setIsSubmitting(false);
+                }
+            };
+
+            const enviarMensajeChat = async () => {
+                if (!chatInput.trim()) return;
+
+                const userMessage = chatInput.trim();
+                setMessages(prev => [...prev, { role: 'user', text: userMessage }]);
+                setChatInput('');
+                setIsTyping(true);
+
+                try {
+                    const response = await fetch(SCRIPT_URL, {
+                        method: "POST",
+                        body: JSON.stringify({ 
+                            mensaje: userMessage, 
+                            fuente: "Chatbot Web",
+                            nombre: formData.nombre || "Visitante",
+                            celular: formData.telefono || "S/N",
+                            email: formData.email || ""
+                        })
+                    });
+
+                    const data = await response.json();
+                    setMessages(prev => [...prev, { role: 'bot', text: data.respuesta }]);
+                } catch (error) {
+                    setMessages(prev => [...prev, { role: 'bot', text: "Lo siento, hubo un problema al conectar con la IA. ¿Podrías registrarte en el formulario o contactarnos por WhatsApp?" }]);
+                } finally {
+                    setIsTyping(false);
+                }
+            };
+
+            return (
+                <div className="min-h-screen bg-slate-50 text-slate-700">
+                    
+                    {/* Barra Institucional */}
+                    <div className="bg-slate-900 text-white text-[10px] py-2 text-center font-black tracking-[0.2em] uppercase">
+                        CAPSTONE PROJECT CUC – VALIDACIÓN AGÉNTICA IA (MODALIDAD 3)
+                    </div>
+
+                    {/* Navbar */}
+                    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200">
+                        <div className="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-sky-500 rounded-xl flex items-center justify-center text-white shadow-lg">
+                                    <Icon name="psychology" size={24} />
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-xl font-black text-slate-900 tracking-tighter uppercase italic leading-none">
+                                        Growth<span className="text-sky-500">Lab</span> <span className="text-xs align-top">v2.0</span>
+                                    </span>
+                                    <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none mt-1">Ecosistema Agéntico</span>
+                                </div>
+                            </div>
+                            <div className="flex gap-4 items-center">
+                                <a href="#dashboard" className="hidden sm:block text-xs font-bold text-slate-500 hover:text-primary transition-colors">Dashboard</a>
+                                <button 
+                                    onClick={() => setIsChatOpen(true)}
+                                    className="bg-sky-500 text-white px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg hover:scale-105 transition-all"
+                                >
+                                    Probar IA
+                                </button>
+                            </div>
                         </div>
-                        <p class="text-sm text-slate-500 leading-relaxed"><span class="text-slate-900 font-black block uppercase tracking-tighter">Optimización del SLA:</span> La reducción a un promedio de <span class="font-bold">5.07 min</span> ha permitido recuperar un 12% de intención de compra comparado con la media sectorial.</p>
+                    </nav>
+
+                    {/* Hero Section */}
+                    <header className="relative overflow-hidden pt-12 pb-24 border-b border-slate-100 bg-gradient-to-br from-slate-50 to-sky-50/30">
+                        <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
+                            
+                            {/* Formulario de Captura */}
+                            <div className="bg-white p-8 lg:p-12 rounded-[3rem] shadow-2xl border border-slate-100 relative z-10">
+                                <div className="mb-10">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-sky-50 text-sky-600 rounded-lg mb-4">
+                                        <Icon name="bolt" size={14} className="animate-pulse" />
+                                        <span className="text-[10px] font-black uppercase tracking-widest">Validación Real-Time v2.0</span>
+                                    </div>
+                                    <h2 className="text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-[0.9] italic mb-4">
+                                        Cero Fugas de <br/><span className="text-sky-500">Leads con IA</span>
+                                    </h2>
+                                    <p className="text-slate-500 text-sm italic max-w-sm">
+                                        La IA califica el lead, consulta horarios y agenda automáticamente. El sistema de ingeniería MIG-EP mide cada milisegundo.
+                                    </p>
+                                </div>
+
+                                <form onSubmit={enviarLead} className="space-y-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <input 
+                                            type="text" id="nombre" placeholder="Nombre completo" required 
+                                            className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-none text-sm focus:ring-2 focus:ring-sky-500 transition-all"
+                                            value={formData.nombre} onChange={handleInputChange}
+                                        />
+                                        <input 
+                                            type="email" id="email" placeholder="Email" required 
+                                            className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-none text-sm focus:ring-2 focus:ring-sky-500 transition-all"
+                                            value={formData.email} onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <input 
+                                            type="tel" id="telefono" placeholder="WhatsApp" required 
+                                            className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-none text-sm focus:ring-2 focus:ring-sky-500 transition-all"
+                                            value={formData.telefono} onChange={handleInputChange}
+                                        />
+                                        <select 
+                                            id="servicio" required 
+                                            className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-none text-sm focus:ring-2 focus:ring-sky-500 transition-all italic text-slate-500"
+                                            value={formData.servicio} onChange={handleInputChange}
+                                        >
+                                            <option value="">Tratamiento</option>
+                                            <option value="Ortodoncia">Ortodoncia</option>
+                                            <option value="Implantes Dentales">Implantes Dentales</option>
+                                            <option value="Profilaxis Pro">Profilaxis Pro</option>
+                                            <option value="Carillas">Carillas</option>
+                                        </select>
+                                    </div>
+
+                                    <button 
+                                        type="submit" disabled={isSubmitting}
+                                        className="w-full bg-slate-900 text-white py-5 rounded-2xl font-black shadow-xl hover:bg-sky-600 active:scale-[0.98] transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-3 disabled:opacity-50"
+                                    >
+                                        <Icon name={isSubmitting ? 'sync' : 'rocket_launch'} size={18} className={isSubmitting ? 'animate-spin' : ''} />
+                                        {isSubmitting ? 'Procesando...' : 'Registrar Lead Agéntico'}
+                                    </button>
+                                    
+                                    {formStatus.message && (
+                                        <div className={`text-[10px] text-center font-bold italic mt-4 p-3 rounded-xl ${formStatus.type === 'success' ? 'bg-green-50 text-green-600' : 'bg-rose-50 text-rose-600'}`}>
+                                            {formStatus.message}
+                                        </div>
+                                    )}
+                                </form>
+
+                                <div className="mt-12 flex justify-between items-center border-t border-slate-50 pt-8">
+                                    <div className="text-center">
+                                        <span className="block text-[8px] font-black text-slate-300 uppercase mb-1">MIG-EP Score</span>
+                                        <span className="text-2xl font-black text-slate-900">70.8</span>
+                                    </div>
+                                    <div className="text-center">
+                                        <span className="block text-[8px] font-black text-slate-300 uppercase mb-1">IA Accuracy</span>
+                                        <span className="text-2xl font-black text-sky-500">98%</span>
+                                    </div>
+                                    <div className="text-center">
+                                        <span className="block text-[8px] font-black text-slate-300 uppercase mb-1">Response Time</span>
+                                        <span className="text-2xl font-black text-teal-500">0.4s</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Visualización Dashboard */}
+                            <div className="relative" id="dashboard">
+                                <div className="bg-white p-4 rounded-[2.5rem] shadow-2xl border border-slate-100 relative z-10">
+                                    <div className="flex justify-between items-center mb-4 border-b pb-3 border-slate-50">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                                            <span className="text-[9px] font-black text-slate-400 uppercase italic">Live Looker Dashboard</span>
+                                        </div>
+                                    </div>
+                                    <div className="aspect-[4/3] bg-slate-50 rounded-2xl overflow-hidden shadow-inner border border-slate-50">
+                                        <iframe 
+                                            src="https://lookerstudio.google.com/embed/reporting/81a4bc5e-2ab0-47ba-97df-958db6ec4bb4/page/9tlqF" 
+                                            className="w-full h-full" allowFullScreen
+                                        />
+                                    </div>
+                                </div>
+                                <p className="mt-6 text-[11px] text-slate-400 italic text-center px-8 leading-relaxed">
+                                    "El Índice MIG-EP v2.0 sintetiza la eficiencia de la IA considerando calificación automática, agendamiento y velocidad."
+                                </p>
+                            </div>
+
+                        </div>
+                    </header>
+
+                    {/* Framework Architecture */}
+                    <section className="py-24 bg-white">
+                        <div className="max-w-7xl mx-auto px-4">
+                            <div className="text-center mb-20">
+                                <h2 className="text-[10px] font-black text-sky-500 uppercase tracking-[0.4em] mb-4 italic">Framework de Ingeniería</h2>
+                                <h3 className="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase italic">Arquitectura Agéntica</h3>
+                            </div>
+                            
+                            <div className="grid md:grid-cols-4 gap-8">
+                                {[
+                                    { i: "input", t: "Captación & RAG", d: "La IA consulta la base de conocimiento para responder precios y sedes sin alucinar." },
+                                    { i: "auto_awesome", t: "Brain Bridge", d: "Gemini 2.0 Flash analiza la intención y califica al lead (Frio/Tibio/Caliente)." },
+                                    { i: "functions", t: "ADK Tools", d: "La IA llama funciones para leer horarios disponibles en el Excel y agendar la cita sola." },
+                                    { i: "leaderboard", t: "Impacto BI", d: "Métricas de conversión agéntica actualizadas en tiempo real en Looker Studio." }
+                                ].map((step, i) => (
+                                    <div key={i} className="p-8 bg-slate-50 rounded-[2rem] border border-slate-100 group hover:border-sky-500 transition-all text-center">
+                                        <div className="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-6 text-slate-300 group-hover:text-sky-500 group-hover:rotate-6 transition-all">
+                                            <Icon name={step.i} size={28} />
+                                        </div>
+                                        <h4 className="text-[11px] font-black uppercase mb-3 text-slate-900">{i+1}. {step.t}</h4>
+                                        <p className="text-[11px] text-slate-400 italic leading-relaxed">{step.d}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Widget de Chatbot */}
+                    <div className={`fixed bottom-6 right-6 z-[100] transition-all duration-500 transform ${isChatOpen ? 'scale-100 translate-y-0' : 'scale-0 translate-y-20'}`}>
+                        <div className="w-80 sm:w-96 bg-white rounded-[2rem] shadow-2xl border border-slate-100 flex flex-col h-[500px] overflow-hidden">
+                            {/* Header Chat */}
+                            <div className="bg-slate-900 p-5 text-white flex justify-between items-center">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-sky-500 rounded-xl flex items-center justify-center text-white relative">
+                                        <Icon name="smart_toy" size={24} />
+                                        <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-slate-900 rounded-full animate-pulse" />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-sm font-bold">Asistente Virtual</h4>
+                                        <p className="text-[9px] text-sky-400 font-black uppercase tracking-widest">Sonrisa Segura IA</p>
+                                    </div>
+                                </div>
+                                <button onClick={() => setIsChatOpen(false)} className="text-slate-500 hover:text-white transition-colors">
+                                    <Icon name="close" size={20} />
+                                </button>
+                            </div>
+
+                            {/* Mensajes */}
+                            <div id="chatMessages" className="flex-1 overflow-y-auto p-5 space-y-4 bg-slate-50">
+                                {messages.map((msg, i) => (
+                                    <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                        <div className={`max-w-[85%] p-4 rounded-2xl text-xs leading-relaxed shadow-sm ${
+                                            msg.role === 'user' 
+                                            ? 'bg-sky-500 text-white rounded-tr-none' 
+                                            : 'bg-white text-slate-600 rounded-tl-none border border-slate-100'
+                                        }`}>
+                                            {msg.text}
+                                        </div>
+                                    </div>
+                                ))}
+                                {isTyping && (
+                                    <div className="flex justify-start">
+                                        <div className="bg-white p-4 rounded-2xl rounded-tl-none border border-slate-100 shadow-sm flex gap-1 italic text-[10px] text-slate-400">
+                                            IA pensando...
+                                        </div>
+                                    </div>
+                                )}
+                                <div ref={chatEndRef} />
+                            </div>
+
+                            {/* Input Chat */}
+                            <div className="p-4 bg-white border-t border-slate-100 flex gap-2">
+                                <input 
+                                    type="text" 
+                                    placeholder="Pregunta por precios o citas..." 
+                                    className="flex-1 bg-slate-100 border-none rounded-xl px-4 py-3 text-xs focus:ring-2 focus:ring-sky-500 transition-all outline-none"
+                                    value={chatInput}
+                                    onChange={(e) => setChatInput(e.target.value)}
+                                    onKeyPress={(e) => e.key === 'Enter' && enviarMensajeChat()}
+                                />
+                                <button 
+                                    onClick={enviarMensajeChat}
+                                    className="bg-sky-500 text-white p-3 rounded-xl shadow-lg shadow-sky-100 hover:bg-sky-600 transition-colors"
+                                >
+                                    <Icon name="send" size={18} />
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 gap-6">
-                <div class="p-8 bg-slate-900 text-white rounded-[2.5rem] shadow-xl">
-                    <span class="text-4xl font-black text-primary italic">46.3%</span>
-                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-2 italic text-balance tracking-tighter">No-Show Detectado</p>
-                    <p class="text-[9px] text-slate-500 mt-4 leading-relaxed italic text-balance">Punto crítico de mejora: El ausentismo impacta directamente en la productividad del especialista.</p>
-                </div>
-                <div class="p-8 bg-slate-100 text-slate-900 rounded-[2.5rem]">
-                    <span class="text-4xl font-black italic">45.8%</span>
-                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-2 italic text-balance tracking-tighter">Conversión actual</p>
-                    <p class="text-[9px] text-slate-500 mt-4 leading-relaxed italic text-balance">Ratio de éxito desde primer contacto a cita agendada bajo protocolos MIG-EP.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
-<!-- SECCIÓN: ARQUITECTURA TÉCNICA -->
-<section class="py-24 bg-slate-50 border-y border-slate-100" id="metodologia">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-20 space-y-3">
-            <h2 class="text-xs font-black text-primary uppercase tracking-[0.3em] italic">Ingeniería de Procesos</h2>
-            <h3 class="text-4xl font-black text-slate-900 tracking-tight font-display text-center uppercase italic">Trazabilidad Automatizada</h3>
-        </div>
-        
-        <div class="grid md:grid-cols-4 gap-8">
-            <div class="p-8 bg-white rounded-3xl border border-slate-100 hover:border-primary transition-all group text-center shadow-sm">
-                <div class="w-16 h-16 bg-slate-50 rounded-2xl shadow-inner flex items-center justify-center mx-auto mb-6 text-slate-400 group-hover:text-primary transition-colors">
-                    <span class="material-icons-outlined text-3xl">input</span>
-                </div>
-                <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-slate-900 leading-tight">1. Captación & Celular</h3>
-                <p class="text-[11px] text-slate-500 italic leading-relaxed">Registro del <span class="text-slate-900 font-bold">número sanitizado</span> y momento ISO mediante Bridge GAS.</p>
-            </div>
-            <div class="p-8 bg-white rounded-3xl border border-slate-100 hover:border-primary transition-all group text-center shadow-sm">
-                <div class="w-16 h-16 bg-slate-50 rounded-2xl shadow-inner flex items-center justify-center mx-auto mb-6 text-slate-400 group-hover:text-primary transition-colors">
-                    <span class="material-icons-outlined text-3xl">code</span>
-                </div>
-                <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-slate-900 leading-tight">2. Bridge Engine</h3>
-                <p class="text-[11px] text-slate-500 italic leading-relaxed">Módulo personalizado que inyecta datos al CRM <span class="text-slate-900 font-bold">sin intervención manual</span>.</p>
-            </div>
-            <div class="p-8 bg-white rounded-3xl border border-slate-100 hover:border-primary transition-all group text-center shadow-sm">
-                <div class="w-16 h-16 bg-white rounded-2xl shadow-inner flex items-center justify-center mx-auto mb-6 text-slate-400 group-hover:text-primary transition-colors">
-                    <span class="material-icons-outlined text-3xl">functions</span>
-                </div>
-                <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-slate-900 leading-tight">3. Cálculo de SLA</h3>
-                <p class="text-[11px] text-slate-500 italic leading-relaxed">Lógica de timestamps para determinar la <span class="text-slate-900 font-bold">latencia comercial</span> real del asesor.</p>
-            </div>
-            <div class="p-8 bg-white rounded-3xl border border-slate-100 hover:border-primary transition-all group text-center shadow-sm">
-                <div class="w-16 h-16 bg-white rounded-2xl shadow-inner flex items-center justify-center mx-auto mb-6 text-slate-400 group-hover:text-primary transition-colors">
-                    <span class="material-icons-outlined text-3xl">leaderboard</span>
-                </div>
-                <h3 class="text-xs font-black uppercase tracking-widest mb-3 text-slate-900 leading-tight">4. BI Intelligence</h3>
-                <p class="text-[11px] text-slate-500 italic leading-relaxed text-balance">Actualización dinámica del <span class="text-slate-900 font-bold">Dashboard 70.8</span> para toma de decisiones.</p>
-            </div>
-        </div>
-    </div>
-</section>
+                    {/* Botón flotante para abrir chat */}
+                    <button 
+                        onClick={() => setIsChatOpen(true)}
+                        className={`fixed bottom-6 right-6 w-16 h-16 bg-sky-500 text-white rounded-2xl shadow-2xl flex items-center justify-center transition-all duration-500 z-[90] hover:scale-110 active:scale-95 ${isChatOpen ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}`}
+                    >
+                        <div className="relative">
+                            <Icon name="message" size={30} />
+                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 border-2 border-white rounded-full flex items-center justify-center text-[8px] font-bold">1</div>
+                        </div>
+                    </button>
 
-<footer class="bg-slate-900 text-white py-20 border-t border-slate-800">
-    <div class="max-w-7xl mx-auto px-4 text-center md:text-left">
-        <div class="grid lg:grid-cols-2 gap-12 items-center border-b border-slate-800 pb-12">
-            <div>
-                <div class="flex items-center gap-3 justify-center lg:justify-start mb-6">
-                    <span class="material-icons-outlined text-primary text-4xl">terminal</span>
-                    <span class="text-2xl font-black tracking-tighter uppercase italic leading-none block">Growth<span class="text-primary">Lab</span></span>
+                    <footer className="bg-slate-900 text-white py-20 mt-24">
+                        <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center border-b border-slate-800 pb-12">
+                            <div>
+                                <div className="flex items-center gap-3 mb-6">
+                                    <Icon name="terminal" size={24} className="text-sky-500" />
+                                    <span className="text-2xl font-black tracking-tighter uppercase italic leading-none block">Growth<span className="text-sky-500">Lab</span></span>
+                                </div>
+                                <p className="text-slate-500 text-xs leading-relaxed max-w-sm">
+                                    Propuesta de Innovación Estratégica - Maestría en Marketing CUC University. 
+                                    <span className="block mt-2 font-black text-slate-400 uppercase italic">Frank Alberto Espinoza Espinoza | Arquitecto de IA Dental</span>
+                                </p>
+                            </div>
+                            <div className="bg-white/5 p-8 rounded-[2rem] border border-white/10">
+                                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-sky-400 mb-4 italic">Declaración de Ingeniería</h4>
+                                <p className="text-[10px] text-slate-400 leading-relaxed italic text-balance">
+                                    Este ecosistema integra Gemini 2.0 Flash vía Google Cloud Platform, permitiendo la automatización de la "Primera Milla" del funnel comercial odontológico. Costo operativo base: S/ 0.00.
+                                </p>
+                            </div>
+                        </div>
+                    </footer>
                 </div>
-                <p class="text-slate-500 text-[11px] leading-relaxed max-w-sm mx-auto lg:mx-0">
-                    Propuesta de Innovación Estratégica - Maestría en Marketing CUC University. 
-                    <span class="block mt-2 font-black text-slate-400 uppercase tracking-tighter italic">Frank Alberto Espinoza Espinoza | Consultor de Datos</span>
-                </p>
-            </div>
-            <div class="bg-white/5 p-8 rounded-3xl border border-white/10 text-left">
-                <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-4 italic font-bold">Estado de Validación: Activo</h4>
-                <p class="text-[10px] text-slate-400 leading-relaxed italic text-balance">
-                    Métricas actualizadas al 09/03/2026. Muestra representativa de 118 leads. Ecosistema digital 100% funcional integrado con Google Cloud Platform.
-                </p>
-            </div>
-        </div>
-        
-        <div class="pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest italic text-center">
-                DentalGrowthLab © 2026 | Ingeniería de Procesos Comerciales
-            </div>
-            <div class="flex items-center gap-4 text-slate-400 text-[10px] font-bold tracking-tighter">
-                <a href="mailto:frankalberto.espinozaespinoza@cucusa.org" class="hover:text-primary transition-colors underline underline-offset-4 decoration-primary/30 tracking-tighter tracking-tighter">frankalberto.espinozaespinoza@cucusa.org</a>
-            </div>
-        </div>
-    </div>
-</footer>
+            );
+        };
 
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+    </script>
 </body>
 </html>
