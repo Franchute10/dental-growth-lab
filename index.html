@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA MIG-EP v2.9.6 - Enterprise Dental</title>
+    <title>SISTEMA MIG-EP v2.9.7 - Enterprise Dental</title>
     
     <!-- Librerías de React y Babel -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -55,26 +55,23 @@
         };
 
         /**
-         * URL DE TU SCRIPT ACTUALIZADA (v2.9.6)
+         * URL DE TU SCRIPT ACTUALIZADA (v2.9.7)
          */
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwKQevX858t-LF1GPgrr5Z5lIF_PHeWX5ODeOwS_u2aw2ao1atG6E2RQf1objM6Dxoo/exec";
 
         const App = () => {
-            // Estados del Formulario
             const [formData, setFormData] = useState({ nombre: '', email: '', telefono: '', servicio: '' });
             const [formStatus, setFormStatus] = useState({ type: '', message: '' });
             const [isSubmitting, setIsSubmitting] = useState(false);
 
-            // Estados del Chatbot
             const [isChatOpen, setIsChatOpen] = useState(false);
             const [chatInput, setChatInput] = useState('');
             const [messages, setMessages] = useState([
-                { role: 'bot', text: 'Hola 👋 Soy el asistente IA de Sonrisa Segura Chacarilla. Tenemos el motor Enterprise activo. ¿Te gustaría agendar una evaluación hoy?' }
+                { role: 'bot', text: 'Hola 👋 Soy el asistente IA de Sonrisa Segura Chacarilla. He actualizado mi sistema a la versión estable v1. ¿En qué tratamiento puedo ayudarte hoy?' }
             ]);
             const [isTyping, setIsTyping] = useState(false);
             const chatEndRef = useRef(null);
 
-            // Auto-scroll al final del chat
             useEffect(() => {
                 chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
             }, [messages, isTyping]);
@@ -83,14 +80,12 @@
                 setFormData({ ...formData, [e.target.id]: e.target.value });
             };
 
-            // REGISTRO DE LEAD (FORMULARIO PRINCIPAL)
             const enviarLead = async (event) => {
                 event.preventDefault();
                 setIsSubmitting(true);
                 setFormStatus({ type: '', message: '' });
 
                 try {
-                    // Usamos no-cors para el registro rápido
                     await fetch(SCRIPT_URL, {
                         method: "POST",
                         mode: "no-cors",
@@ -99,11 +94,11 @@
                             email: formData.email,
                             celular: formData.telefono.replace(/\D/g, ''),
                             servicio: formData.servicio,
-                            fuente: "Formulario Enterprise v2.9.6"
+                            fuente: "Formulario Enterprise v2.9.7"
                         })
                     });
 
-                    setFormStatus({ type: 'success', message: '✅ Registro exitoso. Abriendo atención personalizada...' });
+                    setFormStatus({ type: 'success', message: '✅ Registro exitoso. Iniciando atención...' });
                     
                     setTimeout(() => {
                         window.open(`https://wa.me/51924200094?text=Hola, soy ${formData.nombre}. Consulto por ${formData.servicio}.`, '_blank');
@@ -117,7 +112,6 @@
                 }
             };
 
-            // INTERACCIÓN CON CHATBOT (AGENTE AGÉNTICO)
             const enviarMensajeChat = async () => {
                 if (!chatInput.trim()) return;
 
@@ -131,7 +125,7 @@
                         method: "POST",
                         body: JSON.stringify({ 
                             mensaje: userMessage, 
-                            fuente: "Chatbot Enterprise",
+                            fuente: "Chatbot Enterprise v1 Stable",
                             nombre: formData.nombre || "Visitante",
                             email: formData.email || "",
                             celular: formData.telefono || ""
@@ -141,7 +135,7 @@
                     const data = await response.json();
                     setMessages(prev => [...prev, { role: 'bot', text: data.respuesta }]);
                 } catch (error) {
-                    setMessages(prev => [...prev, { role: 'bot', text: "Hubo un pequeño ajuste técnico en el motor. ¿Podrías intentar de nuevo o registrar tus datos en el formulario principal?" }]);
+                    setMessages(prev => [...prev, { role: 'bot', text: "Hubo un pequeño ajuste técnico en el motor. ¿Podrías intentar de nuevo o registrar tus datos arriba?" }]);
                 } finally {
                     setIsTyping(false);
                 }
@@ -150,57 +144,51 @@
             return (
                 <div className="min-h-screen bg-slate-50 text-slate-700">
                     <div className="bg-slate-900 text-white text-[10px] py-2 text-center font-black tracking-[0.2em] uppercase">
-                        CAPSTONE PROJECT CUC – ECOSISTEMA AGÉNTICO ENTERPRISE v2.9.6
+                        CAPSTONE PROJECT CUC – ECOSISTEMA AGÉNTICO STABLE v2.9.7
                     </div>
 
                     <nav className="sticky top-0 z-50 glass-panel border-b border-slate-200">
                         <div className="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-sky-200">
+                                <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg">
                                     <Icon name="psychology" size={24} />
                                 </div>
                                 <div className="flex flex-col">
                                     <span className="text-xl font-black text-slate-900 tracking-tighter uppercase italic leading-none">
-                                        Growth<span className="text-sky-500">Lab</span> <span className="text-xs align-top">v2.9.6</span>
+                                        Growth<span className="text-sky-500">Lab</span> <span className="text-xs align-top">v2.9.7</span>
                                     </span>
-                                    <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1 italic">Nivel: Enterprise Paid Tier</span>
+                                    <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1 italic tracking-tighter">Nivel: Enterprise Stable (v1)</span>
                                 </div>
                             </div>
-                            <div className="flex gap-4">
-                                <button onClick={() => setIsChatOpen(true)} className="bg-sky-500 text-white px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg hover:scale-105 transition-all">
-                                    Hablar con IA
-                                </button>
-                            </div>
+                            <button onClick={() => setIsChatOpen(true)} className="bg-sky-500 text-white px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg hover:scale-105 transition-all">
+                                Hablar con IA
+                            </button>
                         </div>
                     </nav>
 
                     <header className="pt-12 pb-24 border-b gradient-bg">
                         <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
                             
-                            {/* Formulario Enterprise */}
                             <div className="bg-white p-8 lg:p-12 rounded-[3rem] shadow-2xl border border-slate-100 relative z-10">
-                                <div className="mb-10 text-center lg:text-left">
-                                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-50 text-green-600 rounded-lg mb-4 border border-green-100">
+                                <div className="mb-10">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-50 text-green-600 rounded-lg mb-4">
                                         <Icon name="verified" size={14} />
-                                        <span className="text-[10px] font-black uppercase tracking-widest">SLA Optimizado - Paid Tier</span>
+                                        <span className="text-[10px] font-black uppercase tracking-widest">Motor v1 Stable Activo</span>
                                     </div>
                                     <h2 className="text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-[0.9] italic mb-4">
-                                        Cero Fugas <br/><span className="text-sky-500">Garantizado</span>
+                                        Cero Fugas <br/><span className="text-sky-500">en Chacarilla</span>
                                     </h2>
-                                    <p className="text-slate-500 text-sm italic mt-2">
-                                        Captura inteligente de leads con calificación instantánea vía Gemini.
-                                    </p>
                                 </div>
 
                                 <form onSubmit={enviarLead} className="space-y-4">
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <input type="text" id="nombre" placeholder="Nombre completo" required className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-none text-sm focus:ring-2 focus:ring-sky-500" value={formData.nombre} onChange={handleInputChange} />
-                                        <input type="email" id="email" placeholder="Email" required className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-none text-sm focus:ring-2 focus:ring-sky-500" value={formData.email} onChange={handleInputChange} />
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <input type="text" id="nombre" placeholder="Nombre completo" required className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-none text-sm focus:ring-2 focus:ring-sky-500 shadow-sm" value={formData.nombre} onChange={handleInputChange} />
+                                        <input type="email" id="email" placeholder="Correo" required className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-none text-sm focus:ring-2 focus:ring-sky-500 shadow-sm" value={formData.email} onChange={handleInputChange} />
                                     </div>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <input type="tel" id="telefono" placeholder="WhatsApp (9 dígitos)" required className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-none text-sm focus:ring-2 focus:ring-sky-500" value={formData.telefono} onChange={handleInputChange} />
-                                        <select id="servicio" required className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-none text-sm focus:ring-2 focus:ring-sky-500 italic text-slate-500" value={formData.servicio} onChange={handleInputChange}>
-                                            <option value="">Servicio de Interés</option>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <input type="tel" id="telefono" placeholder="WhatsApp" required className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-none text-sm focus:ring-2 focus:ring-sky-500 shadow-sm" value={formData.telefono} onChange={handleInputChange} />
+                                        <select id="servicio" required className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-none text-sm focus:ring-2 focus:ring-sky-500 italic text-slate-500 shadow-sm" value={formData.servicio} onChange={handleInputChange}>
+                                            <option value="">Tratamiento</option>
                                             <option value="Ortodoncia">Ortodoncia</option>
                                             <option value="Implantes">Implantes Dentales</option>
                                             <option value="Profilaxis">Profilaxis Pro</option>
@@ -211,38 +199,26 @@
                                         <Icon name={isSubmitting ? 'sync' : 'rocket_launch'} className={isSubmitting ? 'animate-spin' : ''} />
                                         {isSubmitting ? 'Sincronizando...' : 'Activar Agente de Ventas'}
                                     </button>
-                                    {formStatus.message && <p className={`text-[10px] text-center font-bold italic mt-2 ${formStatus.type === 'success' ? 'text-green-600' : 'text-rose-600'}`}>{formStatus.message}</p>}
                                 </form>
                             </div>
 
-                            {/* Looker Dashboard */}
                             <div className="bg-white p-4 rounded-[2.5rem] shadow-2xl border border-slate-100">
-                                <div className="flex justify-between items-center mb-4 px-2">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                                        <span className="text-[9px] font-black text-slate-400 uppercase italic">Live Analytics</span>
-                                    </div>
-                                    <Icon name="open_in_new" size={14} className="text-slate-300" />
-                                </div>
-                                <iframe src="https://lookerstudio.google.com/embed/reporting/81a4bc5e-2ab0-47ba-97df-958db6ec4bb4/page/9tlqF" className="w-full aspect-[4/3] rounded-2xl shadow-inner bg-slate-50" allowFullScreen />
+                                <iframe src="https://lookerstudio.google.com/embed/reporting/81a4bc5e-2ab0-47ba-97df-958db6ec4bb4/page/9tlqF" className="w-full aspect-[4/3] rounded-2xl" allowFullScreen />
                             </div>
                         </div>
                     </header>
 
-                    {/* Chatbot Widget */}
                     <div className={`fixed bottom-6 right-6 z-[100] transition-all duration-300 transform ${isChatOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'}`}>
-                        <div className="w-80 sm:w-96 bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.25)] border border-slate-100 flex flex-col h-[500px] overflow-hidden">
+                        <div className="w-80 sm:w-96 bg-white rounded-[2rem] shadow-2xl border border-slate-100 flex flex-col h-[500px] overflow-hidden">
                             <div className="bg-slate-900 p-5 text-white flex justify-between items-center">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 bg-sky-500 rounded-xl flex items-center justify-center text-white relative">
                                         <Icon name="smart_toy" size={24} />
                                         <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-slate-900 rounded-full animate-pulse" />
                                     </div>
-                                    <h4 className="text-sm font-bold leading-tight">Asistente Dental Enterprise <br/><span className="text-[9px] text-sky-400 font-black tracking-widest">Sonrisa Segura IA</span></h4>
+                                    <h4 className="text-sm font-bold leading-tight tracking-tight">Asistente Dental Stable <br/><span className="text-[9px] text-sky-400 font-black tracking-widest">Sonrisa Segura IA</span></h4>
                                 </div>
-                                <button onClick={() => setIsChatOpen(false)} className="text-slate-500 hover:text-white transition-colors">
-                                    <Icon name="close" />
-                                </button>
+                                <button onClick={() => setIsChatOpen(false)} className="text-slate-500 hover:text-white"><Icon name="close" /></button>
                             </div>
 
                             <div id="chatMessages" className="flex-1 overflow-y-auto p-5 space-y-4 bg-slate-50/50">
@@ -261,7 +237,7 @@
                                                 <span className="typing-dot" style={{animationDelay: '0.2s'}}></span>
                                                 <span className="typing-dot" style={{animationDelay: '0.4s'}}></span>
                                             </div>
-                                            <span className="text-[10px] text-slate-400 font-medium">IA analizando agenda...</span>
+                                            <span className="text-[10px] text-slate-400 font-medium">IA conectando con v1 Stable...</span>
                                         </div>
                                     </div>
                                 )}
@@ -269,25 +245,22 @@
                             </div>
 
                             <div className="p-4 bg-white border-t flex gap-2">
-                                <input type="text" placeholder="¿Citas o presupuestos?" className="flex-1 bg-slate-100 border-none rounded-xl px-4 py-3 text-xs focus:ring-0 outline-none" value={chatInput} onChange={(e) => setChatInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && enviarMensajeChat()} />
-                                <button onClick={enviarMensajeChat} className="bg-sky-500 text-white p-3 rounded-xl shadow-lg hover:bg-sky-600 transition-colors shadow-sky-100">
-                                    <Icon name="send" />
-                                </button>
+                                <input type="text" placeholder="¿Precios o citas?" className="flex-1 bg-slate-100 border-none rounded-xl px-4 py-3 text-xs focus:ring-0 outline-none" value={chatInput} onChange={(e) => setChatInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && enviarMensajeChat()} />
+                                <button onClick={enviarMensajeChat} className="bg-sky-500 text-white p-3 rounded-xl shadow-lg shadow-sky-100 transition-colors"><Icon name="send" /></button>
                             </div>
                         </div>
                     </div>
 
-                    {/* Botón flotante */}
                     <button onClick={() => setIsChatOpen(true)} className={`fixed bottom-6 right-6 w-16 h-16 bg-sky-500 text-white rounded-2xl shadow-2xl flex items-center justify-center transition-all hover:scale-110 active:scale-95 shadow-sky-200 z-[90] ${isChatOpen ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}`}>
                         <Icon name="message" size={30} />
                     </button>
-
+                    
                     <footer className="bg-slate-900 text-white py-20 mt-24">
                         <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center border-b border-slate-800 pb-12">
                             <div>
                                 <div className="flex items-center gap-3 mb-6">
                                     <Icon name="terminal" size={24} className="text-sky-500" />
-                                    <span className="text-2xl font-black tracking-tighter uppercase italic leading-none block">Growth<span className="text-sky-500">Lab</span></span>
+                                    <span className="text-2xl font-black tracking-tighter uppercase italic leading-none block font-display tracking-tight">Growth<span className="text-sky-500">Lab</span></span>
                                 </div>
                                 <p className="text-slate-500 text-xs leading-relaxed max-w-sm italic">
                                     Propuesta de Innovación Estratégica - Maestría en Marketing CUC University. 
@@ -295,9 +268,9 @@
                                 </p>
                             </div>
                             <div className="bg-white/5 p-8 rounded-[2rem] border border-white/10">
-                                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-sky-400 mb-4 italic">Framework de Ingeniería Enterprise</h4>
+                                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-sky-400 mb-4 italic">Framework Enterprise Stable</h4>
                                 <p className="text-[10px] text-slate-400 leading-relaxed italic text-balance">
-                                    Este ecosistema integra Gemini 1.5 Flash Paid Tier vía Google Cloud Platform, garantizando una latencia menor a 1s y trazabilidad del 100% de la intención comercial del lead.
+                                    Este ecosistema utiliza Gemini 1.5 Flash (API v1 Stable), garantizando una disponibilidad del 99.9% para la captura y calificación de leads odontológicos.
                                 </p>
                             </div>
                         </div>
