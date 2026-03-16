@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA MIG-EP v3.2 - Producción Final</title>
+    <title>SISTEMA MIG-EP v3.3 - Producción Final</title>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -26,7 +26,7 @@
     <script type="text/babel">
         const { useState, useEffect, useRef, useMemo } = React;
         
-        // URL DE TU GOOGLE APPS SCRIPT (v11.1)
+        // REEMPLAZA ESTA URL CON TU URL DE GOOGLE APPS SCRIPT v11.1
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyEq943FLzB7RzPlwH8HyZN5-LVUQpj4vpfn6a-Qe4y9_Hg4uYEGNtgUa76YXHpfUq4/exec";
 
         const App = () => {
@@ -35,10 +35,10 @@
             const [isTyping, setIsTyping] = useState(false);
             const chatEndRef = useRef(null);
 
-            // Generar un ID de sesión único para esta visita para evitar conflictos en el cache del servidor
-            const sessionId = useMemo(() => "web_" + Math.random().toString(36).substr(2, 9), []);
+            // Generar un ID de sesión único al cargar la página
+            const [sessionId, setSessionId] = useState(() => "web_" + Math.random().toString(36).substr(2, 9));
 
-            // Estado de mensajes: El saludo inicial ahora es directo
+            // Mensajes iniciales
             const [messages, setMessages] = useState([
                 { role: 'bot', text: 'Hola 👋 Soy el asistente IA de Sonrisa Segura Chacarilla. ¿Cuál es tu nombre?' }
             ]);
@@ -46,6 +46,12 @@
             useEffect(() => { 
                 chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); 
             }, [messages, isTyping]);
+
+            const reiniciarChat = () => {
+                setSessionId("web_" + Math.random().toString(36).substr(2, 9));
+                setMessages([{ role: 'bot', text: 'Hola 👋 Soy el asistente IA de Sonrisa Segura Chacarilla. ¿Cuál es tu nombre?' }]);
+                setChatInput('');
+            };
 
             const enviarMensajeChat = async () => {
                 if (!chatInput.trim()) return;
@@ -56,100 +62,75 @@
                 setIsTyping(true);
 
                 try {
+                    // Nota: Usamos POST con body stringify. celular se usa como sessionID en el script
                     const response = await fetch(SCRIPT_URL, {
                         method: "POST",
+                        mode: "cors", // Cambiado a cors para asegurar recepción de respuesta JSON
+                        headers: { "Content-Type": "text/plain" }, 
                         body: JSON.stringify({ 
                             mensaje: userMsg,
-                            celular: sessionId // Enviamos el ID de sesión como identificador
+                            celular: sessionId 
                         })
                     });
-                    const data = await response.json();
                     
+                    const data = await response.json();
                     setMessages(prev => [...prev, { role: 'bot', text: data.respuesta }]);
                 } catch (e) {
-                    setMessages(prev => [...prev, { role: 'bot', text: "Lo siento, hubo un problema de conexión. ¿Podrías intentar de nuevo escribiendo tu mensaje?" }]);
+                    console.error("Error de conexión:", e);
+                    setMessages(prev => [...prev, { role: 'bot', text: "Lo siento Frank, tuve un pequeño parpadeo en la conexión. ¿Podrías repetirme eso último?" }]);
                 } finally { 
                     setIsTyping(false); 
                 }
             };
 
             return (
-                <div className="min-h-screen p-4 sm:p-8 flex flex-col items-center justify-center">
-                    {/* Dashboard Principal de Fondo */}
-                    <div className="max-w-5xl w-full bg-white p-8 sm:p-12 rounded-[3rem] shadow-2xl border border-slate-100 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-8 opacity-5">
-                            <span className="material-icons-outlined text-[150px]">health_and_safety</span>
+                <div className="min-h-screen p-4 sm:p-8 flex flex-col items-center justify-center relative">
+                    
+                    {/* Header Principal */}
+                    <div className="max-w-4xl w-full bg-white p-8 sm:p-12 rounded-[2.5rem] shadow-2xl border border-slate-100 text-center mb-8">
+                        <div className="mb-4 inline-flex p-4 bg-sky-50 rounded-3xl text-primary">
+                            <span className="material-icons-outlined text-5xl">auto_awesome</span>
                         </div>
+                        <h1 className="text-4xl font-black italic text-secondary mb-2">MIG-EP <span className="text-primary text-xl not-italic">v3.3</span></h1>
+                        <p className="text-slate-400 uppercase font-bold text-[10px] tracking-widest">Sede Chacarilla - AI Sales Agent</p>
                         
-                        <div className="relative z-10">
-                            <div className="mb-6 inline-flex p-4 bg-sky-50 rounded-3xl text-primary">
-                                <span className="material-icons-outlined text-5xl">auto_awesome</span>
-                            </div>
-                            <h1 className="text-4xl sm:text-6xl font-black mb-4 italic tracking-tight text-secondary">
-                                MIG-EP <span className="text-primary font-bold not-italic text-2xl">v3.2</span>
-                            </h1>
-                            <p className="text-slate-400 uppercase font-black text-[10px] tracking-[0.4em] mb-12">
-                                Innovation Lab - Dental Sales Optimization
-                            </p>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
-                                <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
-                                    <span className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">SLA Status</span>
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
-                                        <span className="text-sm font-bold text-slate-700">Online & Ready</span>
-                                    </div>
-                                </div>
-                                <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
-                                    <span className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">IA Engine</span>
-                                    <span className="text-sm font-bold text-slate-700 italic">Gemini 1.5 Enterprise</span>
-                                </div>
-                                <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
-                                    <span className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Clinic ID</span>
-                                    <span className="text-sm font-bold text-slate-700">Chacarilla S708</span>
-                                </div>
-                            </div>
-
-                            <button 
-                                onClick={() => setIsChatOpen(true)} 
-                                className="bg-primary text-white px-12 py-6 rounded-3xl font-black uppercase tracking-widest hover:scale-105 transition-all shadow-2xl shadow-sky-200 flex items-center justify-center gap-4 mx-auto group"
-                            >
-                                <span className="material-icons-outlined group-hover:rotate-12 transition-transform">rocket_launch</span>
-                                Iniciar Validación Comercial
+                        <div className="mt-8 flex flex-wrap justify-center gap-4">
+                            <button onClick={() => setIsChatOpen(true)} className="bg-primary text-white px-8 py-4 rounded-2xl font-black uppercase text-xs shadow-lg hover:scale-105 transition-transform flex items-center gap-2">
+                                <span className="material-icons-outlined">chat</span> Abrir Chat de Ventas
+                            </button>
+                            <button onClick={reiniciarChat} className="bg-slate-100 text-slate-500 px-8 py-4 rounded-2xl font-black uppercase text-xs hover:bg-slate-200 transition-colors flex items-center gap-2">
+                                <span className="material-icons-outlined text-sm">refresh</span> Reiniciar Sesión
                             </button>
                         </div>
                     </div>
 
                     {/* Widget del Chat */}
                     <div className={`fixed bottom-6 right-6 z-[100] transition-all duration-500 transform ${isChatOpen ? 'scale-100 opacity-100 translate-y-0' : 'scale-90 opacity-0 translate-y-10 pointer-events-none'}`}>
-                        <div className="w-[340px] sm:w-[400px] bg-white rounded-[2.5rem] shadow-[0_30px_100px_-20px_rgba(0,0,0,0.3)] border border-slate-100 flex flex-col h-[580px] overflow-hidden">
-                            {/* Header del Chat */}
-                            <div className="bg-secondary p-6 text-white flex justify-between items-center">
+                        <div className="w-[340px] sm:w-[400px] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 flex flex-col h-[550px] overflow-hidden">
+                            {/* Header Chat */}
+                            <div className="bg-secondary p-5 text-white flex justify-between items-center">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center border border-white/10">
-                                        <span className="material-icons-outlined text-primary text-xl">smart_toy</span>
+                                    <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center">
+                                        <span className="material-icons-outlined text-primary">smart_toy</span>
                                     </div>
                                     <div>
                                         <h4 className="text-sm font-bold leading-none">Asistente Dental</h4>
-                                        <span className="text-[10px] text-sky-300 font-medium tracking-wide">Sede Chacarilla</span>
+                                        <span className="text-[10px] text-sky-300 font-medium">En línea</span>
                                     </div>
                                 </div>
-                                <button 
-                                    onClick={() => setIsChatOpen(false)}
-                                    className="w-10 h-10 rounded-full hover:bg-white/10 transition-colors flex items-center justify-center"
-                                >
+                                <button onClick={() => setIsChatOpen(false)} className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center">
                                     <i className="material-icons-outlined text-lg">close</i>
                                 </button>
                             </div>
 
-                            {/* Cuerpo de Mensajes */}
-                            <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/50">
+                            {/* Cuerpo */}
+                            <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-slate-50/50">
                                 {messages.map((m, i) => (
                                     <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                         <div className={`p-4 rounded-2xl text-[13px] leading-relaxed max-w-[85%] shadow-sm ${
                                             m.role === 'user' 
                                             ? 'bg-primary text-white rounded-tr-none' 
-                                            : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none font-medium'
+                                            : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none'
                                         }`}>
                                             {m.text}
                                         </div>
@@ -157,43 +138,36 @@
                                 ))}
                                 {isTyping && (
                                     <div className="flex justify-start">
-                                        <div className="bg-white border border-slate-100 px-4 py-3 rounded-2xl rounded-tl-none flex gap-1 items-center">
-                                            <div className="w-1.5 h-1.5 bg-sky-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                                            <div className="w-1.5 h-1.5 bg-sky-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                                            <div className="w-1.5 h-1.5 bg-sky-400 rounded-full animate-bounce"></div>
+                                        <div className="bg-white border border-slate-100 px-4 py-2 rounded-2xl rounded-tl-none flex gap-1">
+                                            <div className="w-1 h-1 bg-sky-400 rounded-full animate-bounce"></div>
+                                            <div className="w-1 h-1 bg-sky-400 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                                            <div className="w-1 h-1 bg-sky-400 rounded-full animate-bounce [animation-delay:0.4s]"></div>
                                         </div>
                                     </div>
                                 )}
                                 <div ref={chatEndRef} />
                             </div>
 
-                            {/* Input del Chat */}
-                            <div className="p-5 bg-white border-t border-slate-50 flex gap-3">
+                            {/* Input */}
+                            <div className="p-4 bg-white border-t border-slate-50 flex gap-2">
                                 <input 
                                     type="text" 
-                                    className="flex-1 bg-slate-100 rounded-2xl px-5 text-sm outline-none focus:ring-2 focus:ring-primary/30 transition-all border-none" 
+                                    className="flex-1 bg-slate-100 rounded-2xl px-5 text-sm outline-none border-none focus:ring-2 focus:ring-primary/30" 
                                     placeholder="Escribe tu respuesta..." 
                                     value={chatInput} 
                                     onChange={e => setChatInput(e.target.value)} 
                                     onKeyPress={e => e.key === 'Enter' && enviarMensajeChat()} 
                                 />
-                                <button 
-                                    onClick={enviarMensajeChat} 
-                                    className="bg-primary text-white w-12 h-12 rounded-2xl hover:bg-secondary transition-colors flex items-center justify-center shadow-lg shadow-sky-100"
-                                >
-                                    <i className="material-icons-outlined text-xl">send</i>
+                                <button onClick={enviarMensajeChat} className="bg-primary text-white w-12 h-12 rounded-2xl hover:bg-secondary transition-colors flex items-center justify-center">
+                                    <i className="material-icons-outlined">send</i>
                                 </button>
                             </div>
                         </div>
                     </div>
-                    
-                    {/* Botón flotante para abrir chat (solo si está cerrado) */}
+
                     {!isChatOpen && (
-                        <button 
-                            onClick={() => setIsChatOpen(true)} 
-                            className="fixed bottom-6 right-6 w-20 h-20 bg-primary text-white rounded-[2rem] shadow-[0_20px_50px_-10px_rgba(14,165,233,0.5)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-[90] group"
-                        >
-                            <i className="material-icons-outlined text-4xl group-hover:rotate-12 transition-transform">forum</i>
+                        <button onClick={() => setIsChatOpen(true)} className="fixed bottom-6 right-6 w-16 h-16 bg-primary text-white rounded-[1.5rem] shadow-xl flex items-center justify-center hover:scale-110 transition-all z-[90]">
+                            <i className="material-icons-outlined text-3xl">forum</i>
                         </button>
                     )}
                 </div>
