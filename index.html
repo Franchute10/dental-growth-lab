@@ -86,11 +86,22 @@
             
             try {
                 // Registro manual usando modo no-cors para evitar problemas de redirección
-                await fetch(SCRIPT_URL, { 
-                    method: "POST", 
-                    mode: "no-cors", 
-                    body: JSON.stringify({ ...formData, mensaje: "REGISTRO_MANUAL_WEB" }) 
-                });
+                const response = await fetch(SCRIPT_URL, {
+                method: "POST",
+                headers: {
+                "Content-Type": "text/plain;charset=utf-8",
+                },
+                body: JSON.stringify({
+                mensaje: "REGISTRO_MANUAL_WEB",
+                nombre: formData.nombre,
+                celular: formData.telefono,
+                servicio: formData.servicio
+                })
+               });
+
+                const data = await response.json();
+                console.log(data);
+                
                 btn.innerText = "¡Listo!";
                 window.open(`https://wa.me/51924200094?text=Hola,%20soy%20${formData.nombre}.%20Me%20interesa%20${formData.servicio}.`, '_blank');
             } catch (err) {
