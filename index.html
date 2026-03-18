@@ -45,7 +45,7 @@
     const { useState, useEffect, useRef, useMemo } = React;
 
     // URL DE TU IMPLEMENTACIÓN DE GOOGLE APPS SCRIPT v12.4
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyoHI5zCs0o28D8A9mpDrmtwueM8VzZ-vG0dmWirHE1VxuNtZtKPvVVi9euvbCZTWRB/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyOHI5zCs0o28D8A9mpDrmtwueM8VzZ-vG0dmWirHE1VxuNtZtKPvVVi9euvbCZTWRB/exec";
 
     const App = () => {
         const [isChatOpen, setIsChatOpen] = useState(false);
@@ -75,7 +75,7 @@
             if (isChatOpen) chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); 
         }, [messages, isTyping, isChatOpen]);
 
-        // Función corregida para registro manual sin bloqueos de conexión
+        // Función corregida para registro manual sin bloqueos y con reset de campos
         const handleFormSubmit = async (e) => {
             e.preventDefault();
             const btn = e.target.querySelector('button');
@@ -83,8 +83,7 @@
             btn.innerText = "Sincronizando...";
             
             try {
-                // Usamos mode: 'no-cors' para asegurar que el envío no falle por políticas del navegador
-                // Esto garantiza que los datos lleguen al Google Sheet aunque no podamos leer la respuesta
+                // Envío asíncrono al script de Google
                 fetch(SCRIPT_URL, {
                     method: "POST",
                     mode: "no-cors", 
@@ -98,9 +97,13 @@
                     })
                 });
                 
-                // Esperamos un momento breve para asegurar el envío y procedemos al redireccionamiento
+                // Redirección y limpieza de formulario
                 setTimeout(() => {
                     window.open(`https://wa.me/51924200094?text=Hola,%20soy%20${formData.nombre}.%20Consulto%20por%20${formData.servicio}.`, '_blank');
+                    
+                    // Limpieza de campos tras el envío
+                    setFormData({ nombre: '', email: '', telefono: '', servicio: '' });
+                    
                     btn.disabled = false;
                     btn.innerText = "Registrar y Validar";
                 }, 1000);
@@ -120,7 +123,6 @@
             setIsTyping(true);
 
             try {
-                // Para el chat sí necesitamos procesar la respuesta JSON
                 const response = await fetch(SCRIPT_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -151,11 +153,11 @@
                             </div>
                             <div>
                                 <span className="text-xl font-black text-slate-900 tracking-tighter uppercase italic block leading-none">Growth<span className="text-primary">Lab</span></span>
-                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none mt-1">Innovation Engine</span>
+                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Innovation Engine</span>
                             </div>
                         </div>
                         <div className="hidden md:flex items-center gap-8">
-                            <a href="#problema" className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-primary">El Problema</a>
+                            <a href="#problema" className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-primary transition-colors">El Problema</a>
                             <a href="#solucion" className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-primary transition-colors">Solución</a>
                             <a href="#dashboard" className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-primary transition-colors">Validación</a>
                             <div className="h-8 w-px bg-slate-200"></div>
@@ -250,7 +252,7 @@
                                     </div>
                                     <span className="text-[9px] font-black text-primary bg-sky-50 px-3 py-1 rounded-full uppercase italic">Live Sincro</span>
                                 </div>
-                                <div className="flex-1 rounded-[2.5rem] overflow-hidden bg-slate-50 mt-4">
+                                <div className="flex-1 rounded-[2.5rem] overflow-hidden bg-slate-50 mt-4 relative">
                                     <iframe src="https://lookerstudio.google.com/embed/reporting/81a4bc5e-2ab0-47ba-97df-958db6ec4bb4/page/9tlqF" className="w-full h-full border-none" allowFullScreen />
                                 </div>
                             </div>
@@ -315,7 +317,7 @@
                     <div className="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-8 text-[10px] font-bold uppercase tracking-[0.2em]">
                         <div className="text-center md:text-left">
                             <span className="text-lg italic tracking-tighter">Growth<span className="text-primary">Lab</span></span>
-                            <p className="text-slate-400 mt-1">Ecosistema de Innovación Aplicada © 2026</p>
+                            <p className="text-slate-400 mt-1">Innovation Lab © 2026</p>
                         </div>
                         <div className="text-center md:text-right">
                             <span>Frank Espinoza | Consultoría Estratégica MIG-EP</span>
