@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>SISTEMA MIG-EP v12.4 - Centro de Mando Dental</title>
+    <title>SISTEMA MIG-EP v12.5 - Centro de Mando Dental</title>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -44,12 +44,12 @@
 <script type="text/babel">
     const { useState, useEffect, useRef, useMemo } = React;
 
-    // IMPORTANTE: Asegúrate de que esta URL sea la de tu implementación activa en Google Apps Script
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyoHI5zCs0o28D8A9mpDrmtwueM8VzZ-vG0dmWirHE1VxuNtZtKPvVVi9euvbCZTWRB/exec";
+    // REEMPLAZAR POR TU URL DE IMPLEMENTACIÓN DE GOOGLE APPS SCRIPT v12.4
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyOHI5zCs0o28D8A9mpDrmtwueM8VzZ-vG0dmWirHE1VxuNtZtKPvVVi9euvbCZTWRB/exec";
 
     const App = () => {
         const [isChatOpen, setIsChatOpen] = useState(false);
-        const [formData, setFormData] = useState({ nombre: '', telefono: '', servicio: '' });
+        const [formData, setFormData] = useState({ nombre: '', email: '', telefono: '', servicio: '' });
         const [chatInput, setChatInput] = useState('');
         const [isTyping, setIsTyping] = useState(false);
         const [messages, setMessages] = useState([
@@ -65,11 +65,9 @@
             return nid;
         }, []);
 
-        // TRIGGER INTELIGENTE: Abrir chat tras 8 segundos
+        // Trigger para abrir el chat automáticamente a los 8 segundos
         useEffect(() => {
-            const timer = setTimeout(() => {
-                setIsChatOpen(true);
-            }, 8000);
+            const timer = setTimeout(() => { setIsChatOpen(true); }, 8000);
             return () => clearTimeout(timer);
         }, []);
 
@@ -77,40 +75,35 @@
             if (isChatOpen) chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); 
         }, [messages, isTyping, isChatOpen]);
 
+        // Función corregida para registro manual directo al Repositorio
         const handleFormSubmit = async (e) => {
             e.preventDefault();
             const btn = e.target.querySelector('button');
             btn.disabled = true;
-            const originalText = btn.innerText;
-            btn.innerText = "Registrando...";
+            btn.innerText = "Sincronizando...";
             
             try {
-                // Registro manual usando modo no-cors para evitar problemas de redirección
                 const response = await fetch(SCRIPT_URL, {
-                method: "POST",
-                headers: {
-                "Content-Type": "text/plain;charset=utf-8",
-                },
-                body: JSON.stringify({
-                mensaje: "REGISTRO_MANUAL_WEB",
-                nombre: formData.nombre,
-                celular: formData.telefono,
-                servicio: formData.servicio
-                })
-               });
-
-                const data = await response.json();
-                console.log(data);
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({
+                        mensaje: "REGISTRO_MANUAL_WEB",
+                        nombre: formData.nombre,
+                        email: formData.email,
+                        celular: formData.telefono,
+                        servicio: formData.servicio
+                    })
+                });
                 
-                btn.innerText = "¡Listo!";
-                window.open(`https://wa.me/51924200094?text=Hola,%20soy%20${formData.nombre}.%20Me%20interesa%20${formData.servicio}.`, '_blank');
+                const data = await response.json();
+                console.log("Respuesta del servidor:", data);
+                
+                window.open(`https://wa.me/51924200094?text=Hola,%20soy%20${formData.nombre}.%20Consulto%20por%20${formData.servicio}.`, '_blank');
             } catch (err) {
-                console.error(err);
+                console.error("Error en registro manual:", err);
             } finally {
-                setTimeout(() => {
-                    btn.disabled = false;
-                    btn.innerText = originalText;
-                }, 2000);
+                btn.disabled = false;
+                btn.innerText = "Registrar y Validar";
             }
         };
 
@@ -122,20 +115,15 @@
             setIsTyping(true);
 
             try {
-                // FIXED: Se envía como text/plain para evitar errores de CORS en Google Apps Script
                 const response = await fetch(SCRIPT_URL, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "text/plain;charset=utf-8",
-                    },
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({ mensaje: msg, celular: sessionId })
                 });
-                
                 const data = await response.json();
                 setMessages(prev => [...prev, { role: 'bot', text: data.respuesta }]);
             } catch (e) {
-                console.error("Error en chat:", e);
-                setMessages(prev => [...prev, { role: 'bot', text: "Lo siento, tuve un problema al procesar tu respuesta. ¿Podrías intentar de nuevo?" }]);
+                setMessages(prev => [...prev, { role: 'bot', text: "Lo siento, tuve un problema de conexión. ¿Podrías intentar de nuevo?" }]);
             } finally {
                 setIsTyping(false);
             }
@@ -156,91 +144,84 @@
                             </div>
                             <div>
                                 <span className="text-xl font-black text-slate-900 tracking-tighter uppercase italic block leading-none">Growth<span className="text-primary">Lab</span></span>
-                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Innovation Engine</span>
+                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none mt-1">Innovation Engine</span>
                             </div>
                         </div>
                         <div className="hidden md:flex items-center gap-8">
-                            <a href="#problema" className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-primary transition-colors">El Problema</a>
-                            <a href="#solucion" className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-primary transition-colors">Solución MIG-EP</a>
-                            <a href="#dashboard" className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-primary transition-colors">Validación</a>
+                            <a href="#problema" className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-primary">El Problema</a>
+                            <a href="#solucion" className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-primary">Solución</a>
+                            <a href="#dashboard" className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-primary">Validación</a>
                             <div className="h-8 w-px bg-slate-200"></div>
-                            <span className="text-[10px] font-black text-green-500 bg-green-50 px-3 py-1 rounded-full uppercase">Sede Chacarilla Live</span>
+                            <span className="text-[10px] font-black text-green-500 bg-green-50 px-3 py-1 rounded-full uppercase">Sede Chacarilla Activa</span>
                         </div>
                     </div>
                 </nav>
 
                 <main className="flex-1">
                     {/* 1. HERO SECTION - IMPACTO */}
-                    <section className="text-center py-24 px-4 gradient-bg border-b border-slate-100">
-                        <div className="max-w-4xl mx-auto">
+                    <section className="text-center py-20 px-4 gradient-bg border-b border-slate-100">
+                        <div className="max-w-5xl mx-auto">
                             <h1 className="text-4xl md:text-6xl font-black text-secondary leading-[1.1] tracking-tight">
                                 Las clínicas dentales pierden hasta <br/>
                                 <span className="text-primary underline decoration-slate-200 underline-offset-8">40% de sus pacientes</span><br/>
                                 por mala gestión de leads
                             </h1>
-
-                            <p className="mt-8 text-lg lg:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed">
-                                <span className="font-bold text-slate-700">MIG-EP</span> no es un chatbot. Es un modelo de transformación comercial que convierte conversaciones en ingresos medibles.
+                            <p className="mt-8 text-lg lg:text-xl text-slate-500 max-w-3xl mx-auto leading-relaxed italic">
+                                MIG-EP es un modelo de transformación comercial que convierte conversaciones en ingresos medibles mediante automatización, trazabilidad y analítica en tiempo real.
                             </p>
-
-                            <div className="mt-12 flex flex-wrap justify-center gap-4">
-                                <button onClick={() => setIsChatOpen(true)} className="bg-primary text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-xs shadow-2xl hover:scale-105 transition-all flex items-center gap-3">
-                                    <span className="material-icons-outlined">psychology</span> Agendar con IA
+                            <div className="mt-12 flex justify-center gap-4">
+                                <button onClick={() => setIsChatOpen(true)} className="bg-primary text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-xs shadow-2xl hover:scale-105 transition-all">
+                                    Agendar con IA
                                 </button>
-                                <a href="#dashboard" className="bg-white border border-slate-200 text-slate-600 px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-slate-50 transition-all flex items-center gap-3">
-                                    <span className="material-icons-outlined">analytics</span> Ver Resultados
+                                <a href="#dashboard" className="bg-white border border-slate-200 text-slate-600 px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-slate-50 transition-all">
+                                    Ver Resultados
                                 </a>
                             </div>
                         </div>
                     </section>
 
                     {/* 2. PROBLEMA (CAPSTONE CORE) */}
-                    <section id="problema" className="py-24 bg-white border-b border-slate-50">
-                        <div className="max-w-5xl mx-auto px-4">
-                            <div className="text-center mb-16">
-                                <span className="text-primary font-black uppercase tracking-[0.3em] text-[10px] bg-sky-50 px-4 py-1 rounded-full">Diagnóstico del Sector</span>
-                                <h2 className="text-3xl lg:text-4xl font-black text-secondary mt-4">Puntos de Fuga en la Gestión Odontológica</h2>
-                            </div>
-
-                            <div className="grid md:grid-cols-2 gap-12 items-center">
-                                <p className="text-lg text-slate-600 leading-relaxed italic">
-                                    "En el sector odontológico peruano, el desorden en WhatsApp y la falta de trazabilidad generan una experiencia fragmentada, resultando en altas tasas de inasistencia y pérdida de rentabilidad."
-                                </p>
-                                <div className="grid grid-cols-1 gap-4">
-                                    {[
-                                        { t: 'Leads sin seguimiento', d: 'Consultas que se pierden en el historial de chat.' },
-                                        { t: 'No-show elevado', d: 'Falta de protocolos de confirmación automática.' },
-                                        { t: 'Falta de indicadores', d: 'Decisiones basadas en intuición, no en datos.' }
-                                    ].map((item, i) => (
-                                        <div key={i} className="flex items-center gap-4 p-5 bg-slate-50 rounded-2xl border border-slate-100">
-                                            <span className="material-icons-outlined text-rose-500">error_outline</span>
-                                            <h3 className="font-bold text-secondary text-sm">{item.t}</h3>
+                    <section id="problema" className="py-24 bg-white">
+                        <div className="max-w-5xl mx-auto px-4 text-center">
+                            <h2 className="text-3xl lg:text-4xl font-black text-secondary mb-10 uppercase italic">Problema del Sector Odontológico</h2>
+                            <p className="text-slate-600 text-lg leading-relaxed mb-16">
+                                En clínicas dentales, la mayoría de consultas se gestionan vía WhatsApp sin estructura, lo que genera pérdida de leads, baja conversión y alta tasa de inasistencia (no-show). La ausencia de métricas impide tomar decisiones estratégicas.
+                            </p>
+                            <div className="grid md:grid-cols-3 gap-8">
+                                {[
+                                    { t: 'Leads sin seguimiento', d: 'Consultas perdidas por falta de trazabilidad inmediata.' },
+                                    { t: 'No-show elevado', d: 'Altas tasas de inasistencia por falta de protocolos de confirmación.' },
+                                    { t: 'Falta de indicadores', d: 'Decisiones basadas en intuición y no en datos medibles.' }
+                                ].map((item, i) => (
+                                    <div key={i} className="p-8 bg-slate-50 rounded-3xl border border-slate-100 group hover:border-primary transition-all">
+                                        <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-6 text-rose-500 group-hover:bg-rose-500 group-hover:text-white transition-all">
+                                            <span className="material-icons-outlined">error_outline</span>
                                         </div>
-                                    ))}
-                                </div>
+                                        <h3 className="font-black text-secondary mb-3 uppercase text-sm">{item.t}</h3>
+                                        <p className="text-xs text-slate-400 italic">{item.d}</p>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </section>
 
                     {/* 3. SOLUCIÓN MIG-EP */}
                     <section id="solucion" className="py-24 gradient-bg">
-                        <div className="max-w-7xl mx-auto px-4 text-center">
-                            <h2 className="text-3xl lg:text-5xl font-black text-secondary mb-4 italic">Modelo <span className="text-primary">MIG-EP</span></h2>
-                            <p className="text-slate-400 uppercase font-bold tracking-[0.4em] text-[10px] mb-16">Framework de Optimización Agéntica</p>
-
+                        <div className="max-w-6xl mx-auto px-4 text-center">
+                            <h2 className="text-3xl lg:text-4xl font-black text-secondary mb-12 uppercase italic">Modelo MIG-EP</h2>
                             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                                 {[
-                                    { i: 'bolt', t: 'Captura', d: 'IA Conversacional 24/7 que califica la intención al instante.' },
-                                    { i: 'storage', t: 'Registro', d: 'CRM estructurado en Google Sheets para trazabilidad total.' },
-                                    { i: 'sync', t: 'Seguimiento', d: 'Automatización comercial que reduce el error humano.' },
-                                    { i: 'query_stats', t: 'Analítica', d: 'Dashboard de KPIs en tiempo real para gerencia.' }
+                                    { i: 'bolt', t: 'Captura', d: 'IA Conversacional 24/7' },
+                                    { i: 'storage', t: 'Registro', d: 'CRM en Google Sheets' },
+                                    { i: 'sync', t: 'Seguimiento', d: 'Automatización Comercial' },
+                                    { i: 'query_stats', t: 'Analítica', d: 'KPIs en Tiempo Real' }
                                 ].map((item, idx) => (
-                                    <div key={idx} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl hover:border-primary transition-all group">
-                                        <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center text-secondary mb-6 group-hover:bg-primary group-hover:text-white transition-all">
+                                    <div key={idx} className="p-8 bg-white rounded-[2.5rem] shadow-xl border border-slate-100 text-center">
+                                        <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-6 text-primary">
                                             <span className="material-icons-outlined text-3xl">{item.i}</span>
                                         </div>
-                                        <h3 className="text-xs font-black uppercase tracking-widest mb-3">{item.t}</h3>
-                                        <p className="text-[11px] text-slate-500 leading-relaxed italic">{item.d}</p>
+                                        <h3 className="font-black text-secondary mb-2 uppercase text-sm">{item.t}</h3>
+                                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{item.d}</p>
                                     </div>
                                 ))}
                             </div>
@@ -250,26 +231,20 @@
                     {/* 4. DEMOSTRACIÓN (DASHBOARD) */}
                     <section id="dashboard" className="py-24 bg-white">
                         <div className="max-w-7xl mx-auto px-4">
-                            <div className="text-center mb-12">
-                                <h2 className="text-3xl lg:text-4xl font-black text-secondary">Resultados en Tiempo Real</h2>
-                                <p className="text-slate-500 mt-4 italic">Evidencia técnica del piloto implementado en Sede Chacarilla</p>
+                            <div className="text-center mb-16">
+                                <h2 className="text-3xl lg:text-4xl font-black text-secondary uppercase italic leading-none">Resultados en Tiempo Real</h2>
+                                <p className="text-slate-500 mt-4 italic">Datos reales del piloto en sede Chacarilla sincronizados con el Repositorio</p>
                             </div>
-
-                            <div className="bg-white p-4 rounded-[3.5rem] shadow-2xl border border-slate-100 flex flex-col h-[650px] relative overflow-hidden group">
-                                <div className="absolute top-0 left-0 w-full h-1 bg-primary"></div>
+                            <div className="bg-white p-4 rounded-[3.5rem] shadow-2xl border border-slate-100 flex flex-col h-[650px] relative">
                                 <div className="flex justify-between items-center px-8 py-4 border-b border-slate-50">
                                     <div className="flex items-center gap-3">
                                         <span className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
-                                        <h3 className="font-black uppercase tracking-widest text-[10px] text-slate-400 italic">Analítica Estratégica (Looker Studio)</h3>
+                                        <h3 className="font-black uppercase tracking-widest text-[10px] text-slate-400">Panel de Control Gerencial (Looker Studio)</h3>
                                     </div>
                                     <span className="text-[9px] font-black text-primary bg-sky-50 px-3 py-1 rounded-full uppercase italic">Live Sincro</span>
                                 </div>
-                                <div className="flex-1 rounded-[2.5rem] overflow-hidden bg-slate-50 mt-4 relative">
-                                    <iframe 
-                                        src="https://lookerstudio.google.com/embed/reporting/81a4bc5e-2ab0-47ba-97df-958db6ec4bb4/page/9tlqF" 
-                                        className="w-full h-full border-none" 
-                                        allowFullScreen
-                                    />
+                                <div className="flex-1 rounded-[2.5rem] overflow-hidden bg-slate-50 mt-4">
+                                    <iframe src="https://lookerstudio.google.com/embed/reporting/81a4bc5e-2ab0-47ba-97df-958db6ec4bb4/page/9tlqF" className="w-full h-full border-none" allowFullScreen />
                                 </div>
                             </div>
                         </div>
@@ -277,50 +252,43 @@
 
                     {/* 5. VALIDACIÓN DEL MODELO */}
                     <section className="py-24 bg-slate-900 text-white relative overflow-hidden">
-                        <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary opacity-10 blur-[100px]"></div>
-                        <div className="max-w-5xl mx-auto px-4 text-center relative z-10">
-                            <h2 className="text-3xl font-black mb-8 italic">Impacto de la Validación</h2>
-                            <p className="text-slate-400 leading-relaxed max-w-2xl mx-auto mb-16">
-                                El modelo MIG-EP fue validado mediante implementación piloto, permitiendo medir de forma objetiva la recuperación de ingresos.
+                        <div className="max-w-5xl mx-auto px-4 text-center">
+                            <h2 className="text-3xl font-black mb-8 italic uppercase">Validación del Modelo</h2>
+                            <p className="text-slate-400 text-lg leading-relaxed max-w-3xl mx-auto mb-16">
+                                El modelo MIG-EP fue validado mediante implementación piloto, permitiendo medir de forma objetiva la recuperación de ingresos y la eficiencia comercial.
                             </p>
-
                             <div className="grid md:grid-cols-3 gap-8">
-                                <div className="bg-white/5 border border-white/10 p-10 rounded-[2.5rem] backdrop-blur-sm">
-                                    <h3 className="text-5xl font-black text-primary mb-2">54%</h3>
-                                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Conversión Final</p>
-                                </div>
-                                <div className="bg-white/5 border border-white/10 p-10 rounded-[2.5rem] backdrop-blur-sm">
-                                    <h3 className="text-5xl font-black text-primary mb-2">4.5m</h3>
-                                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">SLA de Respuesta</p>
-                                </div>
-                                <div className="bg-white/5 border border-white/10 p-10 rounded-[2.5rem] backdrop-blur-sm">
-                                    <h3 className="text-5xl font-black text-primary mb-2">48%</h3>
-                                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">No-show Identificado</p>
-                                </div>
+                                {[
+                                    { v: '54%', t: 'Conversión' },
+                                    { v: '4.5m', t: 'SLA Respuesta' },
+                                    { v: '48%', t: 'No-show Detectado' }
+                                ].map((stat, i) => (
+                                    <div key={i} className="bg-white/5 border border-white/10 p-10 rounded-[2.5rem]">
+                                        <h3 className="text-5xl font-black text-primary mb-2">{stat.v}</h3>
+                                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{stat.t}</p>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </section>
 
                     {/* 6. CIERRE / REGISTRO MANUAL */}
                     <section className="py-24 bg-white">
-                        <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
-                            <div className="space-y-6">
-                                <h2 className="text-4xl font-black text-secondary leading-tight">Convierte tus leads en <br/><span className="text-primary italic">ingresos reales</span></h2>
-                                <p className="text-slate-500 leading-relaxed">
-                                    MIG-EP no es solo tecnología, es un sistema de gestión comercial escalable diseñado para optimizar el retorno de inversión publicitaria en el sector salud.
-                                </p>
-                                <button onClick={() => setIsChatOpen(true)} className="bg-secondary text-white px-10 py-5 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl hover:bg-primary transition-all active:scale-95">
-                                    Activar Agente IA Ahora
-                                </button>
-                            </div>
-
-                            <div className="bg-slate-50 p-8 rounded-[3rem] border border-slate-100 shadow-inner">
-                                <h3 className="text-xl font-bold mb-6 flex items-center gap-2"><span className="material-icons-outlined text-primary">person_add</span> Registro de Lead MIG-EP</h3>
-                                <form onSubmit={handleFormSubmit} className="space-y-4">
-                                    <input type="text" placeholder="Nombre completo" required className="w-full p-4 bg-white border-none rounded-2xl text-sm shadow-sm focus:ring-2 focus:ring-primary transition-all" value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})} />
-                                    <input type="tel" placeholder="WhatsApp" required className="w-full p-4 bg-white border-none rounded-2xl text-sm shadow-sm focus:ring-2 focus:ring-primary transition-all" value={formData.telefono} onChange={e => setFormData({...formData, telefono: e.target.value})} />
-                                    <select required className="w-full p-4 bg-white border-none rounded-2xl text-sm shadow-sm focus:ring-2 focus:ring-primary transition-all italic text-slate-400" value={formData.servicio} onChange={e => setFormData({...formData, servicio: e.target.value})}>
-                                        <option value="">Tratamiento de Interés</option>
+                        <div className="max-w-7xl mx-auto px-4 text-center mb-16">
+                            <h2 className="text-4xl font-black text-secondary leading-tight italic">Convierte tus leads en <span className="text-primary underline underline-offset-8">ingresos reales</span></h2>
+                            <p className="text-slate-500 mt-6 max-w-2xl mx-auto">MIG-EP no es solo un chatbot. Es un sistema de gestión comercial medible para el sector odontológico.</p>
+                        </div>
+                        <div className="max-w-3xl mx-auto bg-slate-50 p-10 rounded-[3rem] border border-slate-100 shadow-inner">
+                            <h3 className="text-xl font-bold mb-8 flex items-center gap-2 justify-center"><span className="material-icons-outlined text-primary">person_add</span> Registro Directo de Lead</h3>
+                            <form onSubmit={handleFormSubmit} className="space-y-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <input type="text" placeholder="Nombre completo" required className="w-full p-4 bg-white border-none rounded-2xl text-sm shadow-sm focus:ring-2 focus:ring-primary" value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})} />
+                                    <input type="email" placeholder="Correo electrónico" required className="w-full p-4 bg-white border-none rounded-2xl text-sm shadow-sm focus:ring-2 focus:ring-primary" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <input type="tel" placeholder="Número WhatsApp" required className="w-full p-4 bg-white border-none rounded-2xl text-sm shadow-sm focus:ring-2 focus:ring-primary" value={formData.telefono} onChange={e => setFormData({...formData, telefono: e.target.value})} />
+                                    <select required className="w-full p-4 bg-white border-none rounded-2xl text-sm shadow-sm focus:ring-2 focus:ring-primary italic text-slate-400" value={formData.servicio} onChange={e => setFormData({...formData, servicio: e.target.value})}>
+                                        <option value="">Selecciona Tratamiento</option>
                                         <option value="Evaluacion Dental">Evaluacion Dental</option>
                                         <option value="Profilaxis Pro">Profilaxis Pro</option>
                                         <option value="Implantes Dentales">Implantes Dentales</option>
@@ -329,9 +297,9 @@
                                         <option value="Blanqueamiento">Blanqueamiento</option>
                                         <option value="Endodoncia">Endodoncia</option>
                                     </select>
-                                    <button type="submit" className="w-full bg-slate-900 text-white py-5 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl hover:bg-primary transition-all active:scale-95">Registrar y Validar</button>
-                                </form>
-                            </div>
+                                </div>
+                                <button type="submit" className="w-full bg-slate-900 text-white py-5 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl hover:bg-primary transition-all active:scale-95">Registrar y Validar</button>
+                            </form>
                         </div>
                     </section>
                 </main>
@@ -340,19 +308,18 @@
                     <div className="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-8 text-[10px] font-bold uppercase tracking-[0.2em]">
                         <div className="text-center md:text-left">
                             <span className="text-lg italic tracking-tighter">Growth<span className="text-primary">Lab</span></span>
-                            <p className="text-slate-400 mt-1">Innovation Lab © 2026</p>
+                            <p className="text-slate-400 mt-1">Ecosistema de Innovación Aplicada © 2026</p>
                         </div>
                         <div className="text-center md:text-right">
-                            <span>Frank Espinoza | Maestría en Marketing</span>
+                            <span>Frank Espinoza | Consultoría Estratégica MIG-EP</span>
                         </div>
                     </div>
                 </footer>
 
-                {/* CHAT WIDGET */}
-                <div className={`fixed bottom-6 right-6 z-[100] transition-all duration-500 transform ${isChatOpen ? 'scale-100 opacity-100 translate-y-0' : 'scale-90 opacity-0 translate-y-10 pointer-events-none'}`}>
+                {/* CHAT WIDGET INTEGRADO CON v12.4 */}
+                <div className={`fixed bottom-6 right-6 z-[100] transition-all duration-500 transform ${isChatOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'}`}>
                     <div className="w-[340px] sm:w-[400px] bg-white rounded-[2.5rem] shadow-[0_20px_80px_-15px_rgba(0,0,0,0.3)] border border-slate-100 flex flex-col h-[580px] overflow-hidden">
                         <div className="bg-secondary p-6 text-white flex justify-between items-center shadow-lg relative overflow-hidden">
-                            <div className="absolute -top-4 -right-4 w-20 h-20 bg-primary/20 rounded-full blur-xl"></div>
                             <div className="flex items-center gap-4 relative z-10">
                                 <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center border border-white/10">
                                     <span className="material-icons-outlined text-primary">smart_toy</span>
@@ -361,7 +328,7 @@
                                     <h4 className="text-sm font-bold leading-none mb-1 tracking-tight">Asistente Dental Pro</h4>
                                     <div className="flex items-center gap-1.5">
                                         <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></div>
-                                        <span className="text-[9px] text-sky-300 font-bold uppercase tracking-widest">En línea v12.4</span>
+                                        <span className="text-[9px] text-sky-300 font-bold uppercase tracking-widest">En línea v12.5</span>
                                     </div>
                                 </div>
                             </div>
@@ -378,9 +345,7 @@
                                         ? 'bg-primary text-white rounded-tr-none' 
                                         : 'bg-white border border-slate-100 text-slate-600 rounded-tl-none'
                                     }`}>
-                                        {m.text.split('\n').map((line, idx) => (
-                                         <div key={idx}>{line}</div>
-                                          ))}
+                                        {m.text}
                                     </div>
                                 </div>
                             ))}
@@ -400,27 +365,21 @@
                             <input 
                                 type="text" 
                                 className="flex-1 bg-slate-100 rounded-2xl px-5 text-sm outline-none border-none focus:ring-2 focus:ring-primary/30 transition-all" 
-                                placeholder="Escribe tu mensaje..." 
+                                placeholder="Escribe tu respuesta..." 
                                 value={chatInput} 
                                 onChange={e => setChatInput(e.target.value)} 
                                 onKeyPress={e => e.key === 'Enter' && enviarMensajeChat()} 
                             />
-                            <button 
-                                onClick={enviarMensajeChat} 
-                                className="bg-primary text-white w-12 h-12 rounded-2xl hover:bg-secondary transition-all flex items-center justify-center shadow-lg shadow-sky-100 active:scale-90"
-                            >
+                            <button onClick={enviarMensajeChat} className="bg-primary text-white w-12 h-12 rounded-2xl hover:bg-secondary transition-all flex items-center justify-center shadow-lg active:scale-90">
                                 <span className="material-icons-outlined">send</span>
                             </button>
                         </div>
                     </div>
                 </div>
 
-                {/* BOTÓN FLOTANTE TRIGGER */}
+                {/* BOTÓN FLOTANTE */}
                 {!isChatOpen && (
-                    <button 
-                        onClick={() => setIsChatOpen(true)} 
-                        className="fixed bottom-8 right-8 w-20 h-20 bg-primary text-white rounded-[2rem] shadow-[0_20px_50px_-10px_rgba(14,165,233,0.5)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-[90] group"
-                    >
+                    <button onClick={() => setIsChatOpen(true)} className="fixed bottom-8 right-8 w-20 h-20 bg-primary text-white rounded-[2rem] shadow-[0_20px_50px_-10px_rgba(14,165,233,0.5)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-[90] group">
                         <i className="material-icons-outlined text-4xl group-hover:rotate-12 transition-transform">forum</i>
                         <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-black">1</span>
                     </button>
