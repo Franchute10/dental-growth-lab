@@ -367,7 +367,9 @@
                                         ? 'bg-primary text-white rounded-tr-none' 
                                         : 'bg-white border border-slate-100 text-slate-600 rounded-tl-none'
                                     }`}>
-                                        {m.text}
+                                        {m.text.split('\n').map((line, idx) => (
+                                         <div key={idx}>{line}</div>
+                                          ))}
                                     </div>
                                 </div>
                             ))}
