@@ -45,7 +45,6 @@
     const { useState, useEffect, useRef, useMemo } = React;
 
     // URL DE TU IMPLEMENTACIÓN DE GOOGLE APPS SCRIPT v12.4
-    // IMPORTANTE: Verifica que al implementar hayas puesto "Acceso: Cualquier persona"
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyOHI5zCs0o28D8A9mpDrmtwueM8VzZ-vG0dmWirHE1VxuNtZtKPvVVi9euvbCZTWRB/exec";
 
     const App = () => {
@@ -75,48 +74,48 @@
             if (isChatOpen) chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); 
         }, [messages, isTyping, isChatOpen]);
 
-        // FUNCIÓN DE REGISTRO MANUAL (SIN BLOQUEOS DE CORS)
+        // FIX DEFINITIVO REGISTRO: "Dispara y Olvida" para evitar bloqueos de Google
         const handleFormSubmit = async (e) => {
             e.preventDefault();
             const btn = e.target.querySelector('button');
             btn.disabled = true;
             btn.innerText = "Sincronizando...";
             
-            try {
-                const nombreParaWA = formData.nombre;
-                const servicioParaWA = formData.servicio;
+            const payload = {
+                mensaje: "REGISTRO_MANUAL_WEB",
+                nombre: formData.nombre,
+                email: formData.email,
+                celular: formData.telefono,
+                servicio: formData.servicio
+            };
 
-                // Enviamos sin esperar respuesta (no-cors) para garantizar que los datos salgan hacia el Sheet
-                // sin que el navegador detenga la ejecución por seguridad.
+            try {
+                // Usamos mode: 'no-cors' para que el navegador NO intente leer la respuesta y NO se bloquee.
+                // Los datos llegarán al Sheet, pero el código seguirá adelante de inmediato.
                 fetch(SCRIPT_URL, {
                     method: "POST",
-                    mode: "no-cors", 
+                    mode: "no-cors",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify({
-                        mensaje: "REGISTRO_MANUAL_WEB",
-                        nombre: formData.nombre,
-                        email: formData.email,
-                        celular: formData.telefono,
-                        servicio: formData.servicio
-                    })
+                    body: JSON.stringify(payload)
                 });
                 
-                // Esperamos un momento para que la petición viaje y procedemos
+                // Redirigimos y limpiamos sin esperar confirmación (la cual Google bloquea por CORS)
                 setTimeout(() => {
-                    window.open(`https://wa.me/51924200094?text=Hola,%20soy%20${nombreParaWA}.%20Me%20interesa%20el%20servicio%20de%20${servicioParaWA}.`, '_blank');
+                    const waLink = `https://wa.me/51924200094?text=Hola,%20soy%20${encodeURIComponent(payload.nombre)}.%20Consulto%20por%20${encodeURIComponent(payload.servicio)}.`;
+                    window.open(waLink, '_blank');
                     setFormData({ nombre: '', email: '', telefono: '', servicio: '' });
                     btn.disabled = false;
                     btn.innerText = "Registrar y Validar";
                 }, 1000);
 
             } catch (err) {
-                console.error("Error registro manual:", err);
+                console.error("Error envío:", err);
                 btn.disabled = false;
                 btn.innerText = "Registrar y Validar";
             }
         };
 
-        // FUNCIÓN DE CHAT IA (OPTIMIZADA PARA RESPUESTA DE GOOGLE)
+        // FIX DEFINITIVO CHAT: Manejo robusto de respuesta
         const enviarMensajeChat = async () => {
             if (!chatInput.trim()) return;
             const msg = chatInput.trim();
@@ -125,27 +124,20 @@
             setIsTyping(true);
 
             try {
-                // Usamos una petición simple para evitar el preflight de CORS de Google
                 const response = await fetch(SCRIPT_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({ mensaje: msg, celular: sessionId })
                 });
 
-                if (!response.ok) throw new Error('Error en el servidor');
-
+                // Si Google redirige o falla el JSON, capturamos el error aquí
                 const data = await response.json();
-                
-                if (data && data.respuesta) {
-                    setMessages(prev => [...prev, { role: 'bot', text: data.respuesta }]);
-                } else {
-                    throw new Error('Respuesta inválida');
-                }
+                setMessages(prev => [...prev, { role: 'bot', text: data.respuesta }]);
             } catch (e) {
-                console.error("Detalle del error de chat:", e);
+                console.error("Error chat:", e);
                 setMessages(prev => [...prev, { 
                     role: 'bot', 
-                    text: "Lo siento, tuve un pequeño problema de conexión con el servidor. ¿Podrías intentar enviar tu respuesta nuevamente? (Verifica que el script esté publicado como 'Cualquiera')." 
+                    text: "Lo siento, tuve un pequeño problema de conexión con el motor de IA. ¿Podrías intentar enviar tu respuesta nuevamente? (Verifica que el script esté publicado como 'Cualquiera')." 
                 }]);
             } finally {
                 setIsTyping(false);
@@ -167,7 +159,7 @@
                             </div>
                             <div>
                                 <span className="text-xl font-black text-slate-900 tracking-tighter uppercase italic block leading-none">Growth<span className="text-primary">Lab</span></span>
-                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Innovation Engine</span>
+                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none mt-1">Innovation Engine</span>
                             </div>
                         </div>
                         <div className="hidden md:flex items-center gap-8">
@@ -203,16 +195,16 @@
                         </div>
                     </section>
 
-                    {/* 2. EL PROBLEMA */}
+                    {/* 2. EL PROBLEMA (CORE CAPSTONE) */}
                     <section id="problema" className="py-24 bg-white border-b border-slate-50">
                         <div className="max-w-5xl mx-auto px-4">
                             <div className="text-center mb-16">
                                 <span className="text-primary font-black uppercase tracking-[0.3em] text-[10px] bg-sky-50 px-4 py-1 rounded-full">Diagnóstico del Sector</span>
-                                <h2 className="text-3xl lg:text-4xl font-black text-secondary mt-4">Puntos de Fuga en la Gestión Odontológica</h2>
+                                <h2 className="text-3xl lg:text-4xl font-black text-secondary mt-4 uppercase italic">Puntos de Fuga en la Gestión Odontológica</h2>
                             </div>
                             <div className="grid md:grid-cols-2 gap-12 items-center">
                                 <p className="text-lg text-slate-600 leading-relaxed italic">
-                                    "En el sector odontológico, la mayoría de consultas se gestionan vía WhatsApp sin estructura, lo que genera pérdida de leads, baja conversión y alta tasa de inasistencia (no-show)."
+                                    "En el sector odontológico peruano, el desorden en WhatsApp y la falta de trazabilidad generan una experiencia fragmentada, resultando en altas tasas de inasistencia y pérdida de rentabilidad."
                                 </p>
                                 <div className="grid grid-cols-1 gap-4">
                                     {[
@@ -233,7 +225,7 @@
                     {/* 3. SOLUCIÓN MODELO MIG-EP */}
                     <section id="solucion" className="py-24 gradient-bg">
                         <div className="max-w-7xl mx-auto px-4 text-center">
-                            <h2 className="text-3xl lg:text-5xl font-black text-secondary mb-4 italic uppercase">Modelo <span className="text-primary">MIG-EP</span></h2>
+                            <h2 className="text-3xl lg:text-5xl font-black text-secondary mb-4 italic uppercase leading-none">Modelo <span className="text-primary">MIG-EP</span></h2>
                             <p className="text-slate-400 uppercase font-bold tracking-[0.4em] text-[10px] mb-16 italic">Framework de Optimización Agéntica</p>
                             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                                 {[
@@ -254,7 +246,7 @@
                         </div>
                     </section>
 
-                    {/* 4. DASHBOARD */}
+                    {/* 4. DASHBOARD ANALÍTICO */}
                     <section id="dashboard" className="py-24 bg-white">
                         <div className="max-w-7xl mx-auto px-4">
                             <div className="text-center mb-16">
@@ -276,8 +268,9 @@
                         </div>
                     </section>
 
-                    {/* 5. VALIDACIÓN */}
+                    {/* 5. VALIDACIÓN DE IMPACTO */}
                     <section className="py-24 bg-slate-900 text-white relative overflow-hidden">
+                        <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary opacity-10 blur-[100px]"></div>
                         <div className="max-w-5xl mx-auto px-4 text-center relative z-10">
                             <h2 className="text-3xl font-black mb-8 italic uppercase">Impacto de la Validación</h2>
                             <div className="grid md:grid-cols-3 gap-8">
@@ -301,9 +294,10 @@
                     <section className="py-24 bg-white">
                         <div className="max-w-7xl mx-auto px-4 text-center mb-16">
                             <h2 className="text-4xl font-black text-secondary leading-tight italic uppercase">Convierte leads en <span className="text-primary underline underline-offset-8">ingresos reales</span></h2>
+                            <p className="text-slate-500 mt-6 max-w-2xl mx-auto">MIG-EP es un sistema escalable diseñado para optimizar el ROI publicitario en el sector salud.</p>
                         </div>
                         <div className="max-w-3xl mx-auto bg-slate-50 p-10 rounded-[3rem] border border-slate-100 shadow-inner">
-                            <h3 className="text-xl font-bold mb-8 flex items-center gap-2 justify-center uppercase italic"><span className="material-icons-outlined text-primary text-3xl">person_add</span> Registro Directo de Lead</h3>
+                            <h3 className="text-xl font-bold mb-8 flex items-center gap-2 justify-center uppercase italic"><span className="material-icons-outlined text-primary text-3xl">person_add</span> Registro de Lead MIG-EP</h3>
                             <form onSubmit={handleFormSubmit} className="space-y-4">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <input type="text" placeholder="Nombre completo" required className="w-full p-4 bg-white border-none rounded-2xl text-sm shadow-sm focus:ring-2 focus:ring-primary" value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})} />
@@ -340,7 +334,7 @@
                     </div>
                 </footer>
 
-                {/* 7. CHAT WIDGET IA */}
+                {/* CHAT WIDGET IA */}
                 <div className={`fixed bottom-6 right-6 z-[100] transition-all duration-500 transform ${isChatOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'}`}>
                     <div className="w-[340px] sm:w-[400px] bg-white rounded-[2.5rem] shadow-[0_20px_80px_-15px_rgba(0,0,0,0.3)] border border-slate-100 flex flex-col h-[580px] overflow-hidden">
                         <div className="bg-secondary p-6 text-white flex justify-between items-center shadow-lg relative overflow-hidden">
