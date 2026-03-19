@@ -142,12 +142,12 @@
         ]);
         const chatEndRef = useRef(null);
 
+        // 🔑 FIX: el sessionId del CHAT siempre se genera fresco por visita.
+        // NO lo guardamos en localStorage para evitar que una sesión del form web
+        // (que queda en estado REGISTRO_WEB en el cache de GAS) bloquee el chatbot.
+        // Cada vez que el usuario abre la página, el chatbot arranca limpio.
         const sessionId = useMemo(() => {
-            const saved = localStorage.getItem('mig_ep_session_v12');
-            if (saved) return saved;
-            const nid = "web_" + Math.random().toString(36).substr(2, 9);
-            localStorage.setItem('mig_ep_session_v12', nid);
-            return nid;
+            return "chat_" + Date.now() + "_" + Math.random().toString(36).substr(2, 6);
         }, []);
 
         useEffect(() => {
