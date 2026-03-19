@@ -71,7 +71,7 @@
 <script type="text/babel">
     const { useState, useEffect, useRef, useMemo } = React;
 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwniOlmxvYYUK1bw0Y5DNkPCaH_Us64rrYOpU7TYmqpngbtnRrLrrCOt9dIlWWj8e4Z/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxz1EWPCLuWJl0TFz9O94iI7VRuPTYrj8akADCMf9ha36sWsOsMZkY1gkWEMkxwByfe/exec";
     const EMPTY_FORM = { nombre: '', email: '', telefono: '', servicio: '' };
 
     // ── Design Thinking phases data ──────────────────────────────────────────
@@ -165,57 +165,27 @@
             if (!formData.nombre || !formData.email || !formData.telefono || !formData.servicio) return;
             setFormStatus('loading');
 
-            const payload = {
+            // ── ESTRATEGIA GET: GAS lee parámetros URL sin problema de CORS ──────
+            // doGet() en el GAS lee e.parameter directamente.
+            // fetch GET a GAS no tiene restricción de CORS porque no envía body.
+            // ─────────────────────────────────────────────────────────────────────
+            const params = new URLSearchParams({
                 mensaje:  "REGISTRO_MANUAL_WEB",
                 nombre:   formData.nombre,
                 email:    formData.email,
                 celular:  formData.telefono,
                 servicio: formData.servicio
-            };
+            });
 
-            // ── ESTRATEGIA: iframe oculto como target del form ──────────────────
-            // fetch con no-cors falla cuando el deployment de GAS cambia de URL
-            // o cuando el navegador bloquea el body en preflight.
-            // Un <form> nativo con target a un iframe oculto NO tiene restricción
-            // de CORS: el browser envía el POST directamente y el GAS lo recibe
-            // sin importar la respuesta (que va al iframe y se ignora).
-            // ────────────────────────────────────────────────────────────────────
             try {
-                // Crear iframe oculto como receptor
-                let iframe = document.getElementById('_gasIframe');
-                if (!iframe) {
-                    iframe = document.createElement('iframe');
-                    iframe.name = '_gasIframe';
-                    iframe.id   = '_gasIframe';
-                    iframe.style.display = 'none';
-                    document.body.appendChild(iframe);
-                }
-
-                // Crear form dinámico apuntando al iframe
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = SCRIPT_URL;
-                form.target = '_gasIframe';
-                form.style.display = 'none';
-
-                // Un solo campo con el JSON completo
-                const field = document.createElement('input');
-                field.type  = 'hidden';
-                field.name  = 'payload';
-                field.value = JSON.stringify(payload);
-                form.appendChild(field);
-
-                document.body.appendChild(form);
-                form.submit();
-                document.body.removeChild(form);
-
-                // Dar 1 segundo para que el request salga antes de mostrar éxito
-                await new Promise(r => setTimeout(r, 1000));
+                await fetch(`${SCRIPT_URL}?${params.toString()}`, {
+                    method: "GET",
+                    mode:   "no-cors"
+                });
 
                 setFormStatus('success');
                 setFormData(EMPTY_FORM);
-
-                const waMsg = encodeURIComponent(`Hola, soy ${payload.nombre}. Me interesa ${payload.servicio}.`);
+                const waMsg = encodeURIComponent(`Hola, soy ${formData.nombre}. Me interesa ${formData.servicio}.`);
                 setTimeout(() => { window.open(`https://wa.me/51924200094?text=${waMsg}`, '_blank'); }, 800);
                 setTimeout(() => setFormStatus('idle'), 4000);
 
